@@ -29,3 +29,4 @@ After copying, do three things:
 | [02-pipeline.md](02-pipeline.md) | the four stages: inputs, outputs, approval points |
 | [03-unity-implementation.md](03-unity-implementation.md) | proposed module split, data model, testing, baking |
 | [04-project-inputs.md](04-project-inputs.md) | per-project facts to fill: assets, legend, scale, open questions |
+| [05-asset-pack-slavic-world-free.md](05-asset-pack-slavic-world-free.md) | worked example: what the first asset pack contains, footprints, gaps versus the sample map |
