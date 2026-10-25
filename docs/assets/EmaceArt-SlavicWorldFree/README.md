@@ -43,10 +43,45 @@ walls and furniture, none on grass, plants and most bushes); children
 (`EA03_LPNP-Slavika_Colorsheet_*`), so the kit batches together. `Town/Building`
 and `Rooms` have no LOD group.
 
-The pivot is at the prefab origin with scale 1. `LOD Group` `m_Size` is the
-largest dimension in meters, approximate; confirm in the Editor before snapping.
+Scale is 1. Each card's measured bounds (W x H x D) are exact LOD0 renderer
+bounds from the Unity batch inspector; the `LOD Group` size is only a rough
+largest dimension.
 
 Naming: `EA03_<Category>_<Name>_<variant>_PRE`; variant letters are alternates.
+Names mislead in places: see "Look" below and the category READMEs.
+
+## Look
+
+Seen in the 238 rendered previews (URP Lit, neutral grey background, one key
+light). Every card shows its preview; each category README shows thumbnails.
+
+- **Style:** low-poly, flat-shaded facets, no texture detail beyond the color
+  atlas. Shapes are chunky and slightly crooked, hand-built rather than
+  procedural.
+- **Palette:** muted and earthy; nothing saturated. Measured dominant colors
+  (rendered, so including lighting) fall into five families:
+
+| Family | Range | Seen on |
+| --- | --- | --- |
+| dark timber | `#1A1815` - `#4E4332` | fences, walls, roofs, piers, outbuildings |
+| stone grey | `#323232` - `#93928F` | rocks, cobble roads, foundations, stone fences |
+| moss / olive green | `#272C16` - `#A6B962` | trees, bushes, grass, bank tops |
+| sand / tan | `#77684E` - `#D2BB84` | sand patches, river bank edges, thatch roofs |
+| mud brown | `#463B2F` - `#635548` | mud patches, the field tile |
+
+- **Buildings:** dark log or plank walls, half-timbered white walls on town
+  houses, plank or shingle roofs, thatch on the cubby, grey stone plinths.
+- **Mood:** reads as an overcast, slightly grim medieval village. Bright
+  regions of the sample map (cyan, purple, orange) have no matching color.
+
+## Placement facts
+
+- 27 prefabs extend more than 0.5 m below their pivot. Town houses go 4.1 - 4.4 m below,
+  `Bld_Village_Convenience_01a` 5.2 m, river pieces 1.6 - 7.0 m. These are meant
+  to sink into terrain; drop them on the ground at the pivot, not at bounds.min.
+- Heaviest LOD0: rooms (13.8 k - 40.7 k triangles), administrative buildings
+  (13.6 k - 17.6 k), `Prop_Composter_01a` 14.6 k, `Nature_Tree_03c` 10 k. The whole
+  set totals 370 k triangles at LOD0.
 
 ## How the demo scene is built
 
@@ -73,9 +108,9 @@ Root objects: `Terrain`, `Trees`, `Rocks`, `Grass`, `Grass_Spawn` (x4), `Fences`
 | forest | strong: Nature trees, bushes, plants, grass |
 | meadow / field | strong: grass, plants, `Terrain/Field` |
 | village / hub | strong: Village, Town, Fence, Environment roads, Prop |
-| rocky / cliff | partial: Environment rocks, stone fences; no cliff-wall module |
+| rocky / cliff | partial: a 6 m rock pillar (`Rock_Slice_01a`), 16 - 20 m stone slabs, stone fences; no cliff-wall module |
 | sand / mud | partial: flat ground patches only |
-| river | partial: straight segments only |
+| river | partial: `RiverStraight` pieces are grassy banks, not water; straight only, water must be added |
 | deep water / sea | none: needs a custom plane with `Water.mat` |
 | cave / dark zone | none |
 
@@ -88,8 +123,8 @@ Root objects: `Terrain`, `Trees`, `Rocks`, `Grass`, `Grass_Spawn` (x4), `Fences`
    map's world scale.
 4. `TODO`: terrain size, resolution and layers are in the binary
    `Terrain/SLAVICA FREE TERRAIN.asset`; read them with an Editor script.
-5. Materials used by prefabs are URP Lit; see [AUDIT.md](AUDIT.md) for the full audit.
-   `TODO`: confirm they look right in the Editor.
+5. Materials used by prefabs are URP Lit and render correctly in URP 17 (all 238
+   previews render, none pink); see [AUDIT.md](AUDIT.md) for the full audit.
 6. `TODO`: the pack's license is not in the repo; check the Asset Store terms
    before shipping anything built from it.
 

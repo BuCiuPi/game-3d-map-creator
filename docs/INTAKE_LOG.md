@@ -46,6 +46,7 @@ newest-first and that no row was duplicated.
 
 | Date (UTC) | Type | Lane | Summary |
 | --- | --- | --- | --- |
+| 2026-10-25 16:50 | new spec | normal | Editor-only prefab inspector (`Assets/game.assetdocs/Editor/`) run via Unity CLI: renders a preview PNG and measures exact bounds, triangles and dominant colors per prefab, merged into the `docs/assets/` prefab cards. Flag: template boundary |
 | 2026-10-25 11:49 | maintenance request | high-risk | Reduce the inherited UPM/Git/NuGet package baseline to capabilities with a live template consumer, preserving R3, boot, UI, URP and Addressables behavior. Flags: packages, precompiled assemblies, ProjectSettings, serialized GUIDs, template boundary |
 | 2026-10-25 10:32 | maintenance request | high-risk | Remove zero-consumer vendored art/editor/runtime assets from the shared template, preserving only capabilities with a live template consumer. Flags: serialized assets, asmdefs, packages, template boundary, large binary deletion |
 | 2026-10-25 09:54 | maintenance request | high-risk | Remove the unused mobile service SDK cohort: Firebase, EDM4U, generated repositories, native Android/iOS/tvOS integrations, IAP/cloud service packages, and stale service build templates. Flags: serialized assets, packages, build profiles, template boundary, auth / SDKs |
