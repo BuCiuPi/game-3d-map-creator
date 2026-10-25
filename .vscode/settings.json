@@ -1,8 +1,7 @@
 {
     "files.exclude": {
-        "**/*.csproj": true,
-        "**/*.sln": true,
         "**/*.unityproj": true,
         "**/*.meta": true
-    }
+    },
+    "dotnet.defaultSolution": "game-3d-map-creator.slnx"
 }

@@ -2,11 +2,8 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 3
-  tags:
-  - UICamera
-  - BoxContain
-  - ItemResult
+  serializedVersion: 2
+  tags: []
   layers:
   - Default
   - TransparentFX
@@ -14,9 +11,9 @@ TagManager:
   - 
   - Water
   - UI
-  - StageItem
-  - BoxContain
-  - Vfx
+  - 
+  - 
+  - 
   - 
   - 
   - 
@@ -41,29 +38,8 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Background
-    uniqueID: 1499132247
-    locked: 0
-  - name: OriginItems
-    uniqueID: 3871246111
-    locked: 0
-  - name: Items
-    uniqueID: 1656538323
-    locked: 0
-  - name: ItemsPhase2
-    uniqueID: 3340059935
-    locked: 0
-  - name: DraggingItem
-    uniqueID: 633284389
-    locked: 0
   - name: Default
     uniqueID: 0
-    locked: 0
-  - name: Popup
-    uniqueID: 171087673
-    locked: 0
-  - name: Tutorial
-    uniqueID: 3075358621
     locked: 0
   m_RenderingLayers:
   - Default
@@ -74,3 +50,27 @@ TagManager:
   - Light Layer 5
   - Light Layer 6
   - Light Layer 7
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
