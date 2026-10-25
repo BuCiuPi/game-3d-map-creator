@@ -32,6 +32,7 @@ knowledge for the actual game.
 | [02-runtime-and-wiring.md](02-runtime-and-wiring.md) | assemblies, neutral boot, UI and handle ownership |
 | [03-build-and-profiles.md](03-build-and-profiles.md) | opening, proof commands, Addressables configuration |
 | [04-port-map-from-cricket.md](04-port-map-from-cricket.md) | historical harness research and port decisions |
+| [05-map-to-environment-pipeline.md](05-map-to-environment-pipeline.md) | pointer to the portable `docs/map-to-environment/` pack, plus this repo's constraints on building it |
 
 The unnumbered files are generic Unity references; repository facts belong in
 the numbered files.
