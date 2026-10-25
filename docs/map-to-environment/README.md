@@ -13,7 +13,7 @@ and what is `TODO`. Update status lines when a stage ships.
 ## Moving this pack to another project
 
 The folder is self-contained: copy `docs/map-to-environment/` as-is. It links
-only to its own files and names no repository-specific path, type, or tool.
+only to its own files, plus the sibling `docs/assets/` tree for asset facts.
 After copying, do three things:
 
 1. Fill the `TODO` lines in `04-project-inputs.md` for the new project.
@@ -29,4 +29,4 @@ After copying, do three things:
 | [02-pipeline.md](02-pipeline.md) | the four stages: inputs, outputs, approval points |
 | [03-unity-implementation.md](03-unity-implementation.md) | proposed module split, data model, testing, baking |
 | [04-project-inputs.md](04-project-inputs.md) | per-project facts to fill: assets, legend, scale, open questions |
-| [05-asset-pack-slavic-world-free.md](05-asset-pack-slavic-world-free.md) | worked example: what the first asset pack contains, footprints, gaps versus the sample map |
+| `docs/assets/` | asset knowledge, split by pack and category; the first pack is the worked example |

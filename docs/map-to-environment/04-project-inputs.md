@@ -7,7 +7,7 @@ Facts that differ per project. Fill every `TODO` before stage 1.
 | Unity version | TODO: from `ProjectSettings/ProjectVersion.txt` |
 | Map image | TODO: clean file, annotations removed |
 | Legend | TODO: color -> region type -> border type table |
-| 3D asset folder | `Assets/EmaceArt/Slavic World Free/` (see `05-asset-pack-slavic-world-free.md`) |
+| 3D asset folder | `Assets/EmaceArt/Slavic World Free/` (see `docs/assets/EmaceArt-SlavicWorldFree/README.md`) |
 | Asset organisation | Mixed: free props and buildings, a few modular hut parts, no ground tiles |
 | Output form | TODO: flat prefab placement or Unity Terrain with height |
 | World scale | TODO: world units across the map's longest side |
