@@ -1,0 +1,68 @@
+// ============================================================
+// Template: Wire data class (the T in ResponseBase<T>)
+// ============================================================
+// Ported from cricket-city-unity .claude/skills/api-codegen/References/data.cs.template
+// @ 8da403c97; rewritten for com.paul.common.networking @ beb0af1.
+//
+// Placeholders:
+//   {{data_namespace}}  — config.data_namespace
+//   {{Name}}ApiData     — e.g. RewardApiData
+//   {{endpoint_path}}   — the route this payload comes from
+//
+// Style source: config.example_data (UserProfileApiData today) — a
+// [System.Serializable] class with [JsonProperty] public auto-properties and
+// List<T> collections initialised to new(). If example_data changes, follow it.
+// ============================================================
+
+namespace {{data_namespace}}
+{
+    using System.Collections.Generic;
+    using Newtonsoft.Json;
+
+    /// <summary>
+    /// Wire shape of <c>{{endpoint_path}}</c>. Maps 1:1 to the transport schema;
+    /// callers read {{Name}}Model, never this.
+    /// </summary>
+    [System.Serializable]
+    public class {{Name}}ApiData
+    {
+        [JsonProperty("reward_id")]
+        public string RewardId { get; set; }
+
+        [JsonProperty("count")]
+        public int Count { get; set; }
+
+        [JsonProperty("is_active")]
+        public bool IsActive { get; set; }
+
+        // collection — follow example_data (List<T> = new() today):
+        [JsonProperty("items")]
+        public List<ItemApiData> Items { get; set; } = new();
+
+        // nested object:
+        [JsonProperty("details")]
+        public DetailsApiData Details { get; set; }
+
+        // keys are data (declared in config.dictionary_paths):
+        // [JsonProperty("board")]
+        // public Dictionary<string, Dictionary<string, CellApiData>> Board { get; set; }
+    }
+
+    // Nested object — a separate class in the same file:
+    [System.Serializable]
+    public class DetailsApiData
+    {
+        [JsonProperty("sub_field")] public string SubField { get; set; }
+    }
+}
+
+// ---- Rules ----
+// - One class per distinct object in the response schema.
+// - Nullable value types (int?, bool?) only where a sample or the spec shows null.
+// - Date/time strings stay string; parse at the use site.
+// - Enum only when the union of values across all samples is known; else string.
+// - A field null in every sample is type-unknown: stop and ask.
+// - The {} instead of [] quirk: a concrete (non-generic) JsonConverter on that one
+//   property, never a generic converter (IL2CPP/WebGL AOT) — gateway-wiring Rule 2.6.
+// - class vs record: .claude/rules/csharp-type-choice.md. No record types exist in
+//   Assets/game.* yet; stay with class unless the project records otherwise.

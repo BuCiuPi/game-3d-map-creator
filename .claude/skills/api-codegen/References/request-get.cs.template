@@ -1,0 +1,89 @@
+// ============================================================
+// Template: Request + Response for GET or DELETE (no body)
+// ============================================================
+// Ported from cricket-city-unity .claude/skills/api-codegen/References/request-get.cs.template
+// @ 8da403c97; rewritten for com.paul.common.networking @ beb0af1.
+//
+// Placeholders (from project config + contract source):
+//   {{framework_usings}}   — framework using directives from project config
+//   {{request_namespace}}  — config.request_namespace
+//   {{Name}}               — e.g. ListRewards (full class name = Request{{Name}})
+//   {{endpoint_path}}      — e.g. reward/api/v1/rewards/  (keep the trailing slash)
+//   {{OperationMethod}}    — Get or Delete
+//   {{DataType}}           — e.g. List<RewardApiData>, or object for no payload
+//   {{path_params}}        — path-id properties (if any)
+//   {{query_params}}       — query properties (if any)
+// ============================================================
+//
+// There is NO request source generator in com.paul.common.networking @ beb0af1.
+// ApiClient reads only the five virtual methods on RequestBase; override the ones
+// this endpoint needs. Do not add [RequestGenerator]/[Get]/[ResourceKey]/
+// [RequestParameter]/[RequestHeader] — nothing reads them.
+// ============================================================
+
+namespace {{request_namespace}}
+{
+    {{framework_usings}}
+
+    /// <summary>
+    /// <c>{{OperationMethod}} /{{endpoint_path}}</c> — one line on what it does, plus
+    /// anything the payload does not make obvious (e.g. which id this returns).
+    /// </summary>
+    public class Request{{Name}} : RequestBase, IRestRequest, ITokenAuthenticatedRequest
+    {
+{{path_params}}
+{{query_params}}
+
+        [JsonIgnore]
+        public string Token { get; set; }
+
+        public override OperationMethod GetRequestMethod() => OperationMethod.{{OperationMethod}};
+
+        public override string GetPath() => "{{endpoint_path}}";
+
+        // Only when the route has {placeholders}:
+        public override Dictionary<string, string> GetResources() => new()
+        {
+            ["session_id"] = SessionId,
+        };
+
+        // Only when the endpoint takes query parameters:
+        public override Dictionary<string, string> GetParameters() => new()
+        {
+            ["page"] = Uri.EscapeDataString(Page ?? string.Empty),
+        };
+
+        public override Dictionary<string, string> GetHeaders() => new()
+        {
+            [Const.JwtAuthKeyHeader] = Token,
+        };
+    }
+
+    public class Response{{Name}} : ResponseBase<{{DataType}}>
+    {
+    }
+}
+
+// ---- Path param block (include per path param) ----
+//         [JsonIgnore]
+//         public string SessionId { get; set; }
+
+// ---- Query param block (include per query param) ----
+//         [JsonIgnore]
+//         public string Page { get; set; }
+
+// ---- Notes ----
+// - IRestRequest sends no body, so [JsonObject(MemberSerialization.OptIn)] is NOT
+//   required here — that guard is for IJsonDataRequest only (see request-post).
+//   [JsonIgnore] is still applied to every member so the no-body intent is explicit.
+// - A null path value is skipped by the package and "{session_id}" stays literally
+//   in the URL. Validate ids in the gateway, not after a 404.
+// - The package does not URL-escape query values and drops empty ones; escape here.
+// - Headers with an empty value are dropped, so a call made before auth simply
+//   sends no Authorization header (expect a 401 -> UnityWebRequestException).
+// - ApiClient strips a leading '/' and always appends a trailing '/'.
+// - Routes follow captured samples, not the design doc and not the spec.
+// - The template puts `using` directives inside the namespace (see any file in
+//   Assets/game.shared/). Add `using System;` (Uri) and
+//   `using System.Collections.Generic;` beside the framework usings, and confirm
+//   order against config.example_request once one exists.

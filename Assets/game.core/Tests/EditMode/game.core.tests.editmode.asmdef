@@ -1,0 +1,21 @@
+{
+  "name": "game.core.tests.editmode",
+  "rootNamespace": "Game.Core.Tests.EditMode",
+  "references": [
+    "game.core.runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

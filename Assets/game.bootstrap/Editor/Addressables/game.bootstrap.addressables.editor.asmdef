@@ -1,0 +1,19 @@
+{
+  "name": "game.bootstrap.addressables.editor",
+  "rootNamespace": "Game.Bootstrap.Editor.Addressables",
+  "references": [
+    "SmartAddresser.Editor",
+    "Unity.Addressables.Editor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

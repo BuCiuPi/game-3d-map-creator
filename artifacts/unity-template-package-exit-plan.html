@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Unity Template — Package Exit Plan</title>
+  <style>
+    :root {
+      --bg: #070a10;
+      --panel: #101722;
+      --panel-2: #151f2e;
+      --line: #29364a;
+      --text: #edf4ff;
+      --muted: #9cabbe;
+      --cyan: #55d9e8;
+      --blue: #79aaff;
+      --green: #73dfa1;
+      --amber: #f1c76e;
+      --red: #ff8295;
+      --violet: #b69cff;
+      --radius: 18px;
+      --shadow: 0 22px 65px rgba(0, 0, 0, .34);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 8% -5%, rgba(85, 217, 232, .14), transparent 28rem),
+        radial-gradient(circle at 93% 3%, rgba(182, 156, 255, .12), transparent 30rem),
+        linear-gradient(180deg, #0a0e16 0%, var(--bg) 62%, #06080d 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.58;
+    }
+
+    a { color: var(--cyan); }
+
+    code {
+      color: #dce8ff;
+      background: rgba(121, 170, 255, .09);
+      border: 1px solid rgba(121, 170, 255, .18);
+      border-radius: 6px;
+      padding: .12rem .38rem;
+      font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      font-size: .9em;
+    }
+
+    pre {
+      overflow: auto;
+      margin: 14px 0 0;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      color: #d8e5fa;
+      background: #090e16;
+      font: .82rem/1.62 "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      white-space: pre;
+    }
+
+    pre .minus { color: #ff9baa; }
+    pre .plus { color: #86e9ac; }
+    pre .dim { color: #77859a; }
+
+    .shell {
+      width: min(1200px, calc(100% - 34px));
+      margin: 0 auto;
+      padding: 34px 0 90px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(30px, 5vw, 58px);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(20, 29, 43, .98), rgba(10, 15, 24, .95));
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -100px;
+      top: -145px;
+      width: 360px;
+      height: 360px;
+      border: 58px solid rgba(85, 217, 232, .055);
+      border-radius: 48% 52% 63% 37%;
+      transform: rotate(26deg);
+    }
+
+    .eyebrow,
+    .section-kicker {
+      margin: 0 0 10px;
+      color: var(--cyan);
+      font-size: .74rem;
+      font-weight: 850;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 880px;
+      margin: 0;
+      font-size: clamp(2.35rem, 6vw, 5rem);
+      line-height: .98;
+      letter-spacing: -.055em;
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      font-size: clamp(1.65rem, 3vw, 2.55rem);
+      letter-spacing: -.038em;
+    }
+
+    h3 { margin: 0 0 9px; font-size: 1.02rem; }
+    p { margin: 0 0 12px; }
+
+    .hero-copy {
+      max-width: 800px;
+      margin: 24px 0 0;
+      color: #c1ccdc;
+      font-size: 1.05rem;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 27px;
+    }
+
+    .chip,
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #c9d5e7;
+      background: rgba(255, 255, 255, .025);
+      font-size: .8rem;
+      font-weight: 700;
+    }
+
+    .chip.good, .pill.good { color: var(--green); border-color: rgba(115, 223, 161, .34); }
+    .chip.warn, .pill.warn { color: var(--amber); border-color: rgba(241, 199, 110, .37); }
+    .pill.red { color: var(--red); border-color: rgba(255, 130, 149, .35); }
+
+    .toolbar {
+      position: sticky;
+      top: 10px;
+      z-index: 8;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      overflow-x: auto;
+      margin: 18px 0 36px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: rgba(8, 12, 19, .9);
+      backdrop-filter: blur(18px);
+      scrollbar-width: none;
+    }
+
+    .toolbar a,
+    button {
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 9px;
+      padding: 9px 12px;
+      color: var(--muted);
+      background: transparent;
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .toolbar a:hover,
+    button:hover { color: var(--text); background: var(--panel-2); }
+
+    .toolbar .push { margin-left: auto; }
+
+    .progress-wrap {
+      min-width: 160px;
+      padding: 0 8px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: .7rem;
+      font-weight: 800;
+    }
+
+    .progress {
+      height: 6px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: #1d2634;
+    }
+
+    .progress > span {
+      display: block;
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--cyan), var(--green));
+      transition: width .2s ease;
+    }
+
+    section { margin-top: 50px; scroll-margin-top: 92px; }
+
+    .metric-grid,
+    .decision-grid,
+    .risk-grid,
+    .gate-grid,
+    .two-col {
+      display: grid;
+      gap: 14px;
+    }
+
+    .metric-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); margin-top: 18px; }
+    .decision-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .risk-grid, .gate-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .metric,
+    .card,
+    .gate,
+    .risk,
+    .phase {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(16, 23, 34, .82);
+      box-shadow: 0 12px 34px rgba(0, 0, 0, .14);
+    }
+
+    .metric { padding: 18px; }
+    .metric strong { display: block; font-size: 1.45rem; letter-spacing: -.035em; }
+    .metric span { color: var(--muted); font-size: .78rem; }
+
+    .card,
+    .gate,
+    .risk { padding: 20px; }
+
+    .card p,
+    .gate p,
+    .risk p { color: var(--muted); font-size: .91rem; }
+
+    .callout {
+      padding: 20px 22px;
+      border: 1px solid rgba(85, 217, 232, .25);
+      border-left: 4px solid var(--cyan);
+      border-radius: 13px;
+      color: #c9d7e9;
+      background: rgba(85, 217, 232, .05);
+    }
+
+    .callout.warn {
+      border-color: rgba(241, 199, 110, .27);
+      border-left-color: var(--amber);
+      background: rgba(241, 199, 110, .045);
+    }
+
+    .phase { overflow: hidden; margin-top: 15px; }
+
+    .phase-head {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 19px 21px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(90deg, rgba(121, 170, 255, .08), transparent 65%);
+    }
+
+    .phase-no {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      color: var(--cyan);
+      background: rgba(85, 217, 232, .09);
+      font-weight: 900;
+    }
+
+    .phase-head h3 { margin: 0; font-size: 1.06rem; }
+    .phase-head small { color: var(--muted); }
+    .phase-body { padding: 17px 21px 21px; }
+
+    .task {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 11px;
+      padding: 11px 0;
+      border-bottom: 1px dashed rgba(41, 54, 74, .7);
+    }
+
+    .task:last-child { border-bottom: 0; }
+
+    .task input {
+      width: 18px;
+      height: 18px;
+      margin: 3px 0 0;
+      accent-color: var(--cyan);
+    }
+
+    .task label { color: #d7e1ee; cursor: pointer; }
+    .task label small { display: block; margin-top: 3px; color: var(--muted); }
+    .task input:checked + label { color: #8493a7; text-decoration: line-through; }
+
+    .tree {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      color: #cdd9ea;
+      background: #0a0f18;
+      font: .85rem/1.65 "Cascadia Code", Consolas, monospace;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(16, 23, 34, .76);
+    }
+
+    th, td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: .88rem;
+    }
+
+    th { color: #dce7f8; background: rgba(121, 170, 255, .07); }
+    td { color: #b9c6d8; }
+    tr:last-child td { border-bottom: 0; }
+
+    .footer {
+      margin-top: 58px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    @media (max-width: 900px) {
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .decision-grid, .risk-grid, .gate-grid, .two-col { grid-template-columns: 1fr; }
+      .phase-head { grid-template-columns: auto 1fr; }
+      .phase-head .pill { grid-column: 2; justify-self: start; }
+      .toolbar .push { margin-left: 0; }
+    }
+
+    @media print {
+      :root { color-scheme: light; }
+      body { color: #101621; background: white; }
+      .shell { width: 100%; padding: 0; }
+      .hero, .metric, .card, .gate, .risk, .phase, table, .tree, pre {
+        color: #101621;
+        background: white;
+        box-shadow: none;
+        break-inside: avoid;
+      }
+      .toolbar { display: none; }
+      .hero-copy, .card p, .gate p, .risk p, td, .task label small, .footer { color: #455267; }
+      section { margin-top: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <p class="eyebrow">Approval artifact · plan only</p>
+      <h1>Thin Template<br>Package Exit</h1>
+      <p class="hero-copy">
+        Kế hoạch đưa <code>unity-template</code> về trạng thái fresh clone mở được mà
+        không cần <code>game-packages</code>, <code>vfx-packages</code> hay package nội bộ mặc định.
+        Main repo sở hữu core, bootstrap và UI shell trung tính; networking chỉ được gắn bằng
+        Git UPM khi project có endpoint thật.
+      </p>
+      <div class="chips">
+        <span class="chip good">Baseline: main @ 5658e8d</span>
+        <span class="chip good">Owner direction: approved</span>
+        <span class="chip good">C1 compile: clean</span>
+        <span class="chip warn">Plan only · no product delta</span>
+      </div>
+    </header>
+
+    <div class="metric-grid" aria-label="Current evidence">
+      <div class="metric"><strong>2</strong><span>private git submodules</span></div>
+      <div class="metric"><strong>7</strong><span>com.paul manifest entries</span></div>
+      <div class="metric"><strong>87</strong><span>C# consumer files in legacy roots</span></div>
+      <div class="metric"><strong>255</strong><span>VFX Addressable entries</span></div>
+      <div class="metric"><strong>0</strong><span>package refs from game.core</span></div>
+    </div>
+
+    <nav class="toolbar" aria-label="Plan navigation">
+      <a href="#direction">Direction</a>
+      <a href="#target">Target tree</a>
+      <a href="#roadmap">Todo</a>
+      <a href="#diffs">Exact diffs</a>
+      <a href="#gates">Gates</a>
+      <a href="#risks">Risks</a>
+      <a href="#signoff">Sign-off</a>
+      <div class="progress-wrap push">
+        <div class="progress-meta"><span>Checklist</span><span id="progressText">0 / 0</span></div>
+        <div class="progress"><span id="progressBar"></span></div>
+      </div>
+      <button type="button" id="resetButton">Reset</button>
+      <button type="button" onclick="window.print()">Print / PDF</button>
+    </nav>
+
+    <section id="direction">
+      <p class="section-kicker">01 · Direction</p>
+      <h2>Những gì đã chốt</h2>
+      <div class="decision-grid">
+        <article class="card">
+          <span class="pill good">Approved</span>
+          <h3>Không còn game package module</h3>
+          <p><code>paul.game.shared</code> và <code>paul.game.visualization</code> rời template. Logic game/project nằm trong main repo hoặc feature được agent thêm sau.</p>
+        </article>
+        <article class="card">
+          <span class="pill good">Approved</span>
+          <h3>Không còn VFX submodule</h3>
+          <p><code>vfx-packages</code> không phải core của template. Project cần VFX sẽ cài capability riêng, không kéo theo mặc định.</p>
+        </article>
+        <article class="card">
+          <span class="pill good">Approved</span>
+          <h3>Không có internal package mặc định</h3>
+          <p><code>Assets/game.core</code> hiện độc lập. Không thêm HyperEel chỉ để “phòng khi cần”.</p>
+        </article>
+        <article class="card">
+          <span class="pill good">Approved</span>
+          <h3>Git UPM theo nhu cầu</h3>
+          <p>Khi có API thật, project thêm networking package pin bằng commit SHA. Common core chỉ thêm nếu code thực sự dùng API của nó.</p>
+        </article>
+        <article class="card">
+          <span class="pill good">Approved</span>
+          <h3>Template-owned UI shell</h3>
+          <p>Toast, MessageOverlay và loading shell sống trong main repo; prefab deliverable nằm dưới Addressables root.</p>
+        </article>
+        <article class="card">
+          <span class="pill warn">Sequence rule</span>
+          <h3>Consumer trước, dependency sau</h3>
+          <p>Không xóa gitlink trước khi code, prefab, scene, material và Addressables ngừng tham chiếu GUID/package assembly.</p>
+        </article>
+      </div>
+      <div class="callout" style="margin-top:15px">
+        <strong>North star:</strong> clone repository → Unity resolve package → compile → EditMode → boot neutral shell,
+        không cần <code>git submodule update --init --recursive</code> và không cần quyền truy cập repository nội bộ.
+      </div>
+    </section>
+
+    <section id="target">
+      <p class="section-kicker">02 · Target state</p>
+      <h2>Cây tối thiểu sau migration</h2>
+      <div class="two-col">
+        <div class="tree">Assets/
+├─ game.core/
+│  ├─ Runtime/Data/              # DT / DA primitives
+│  └─ Tests/EditMode/
+├─ game.bootstrap/
+│  └─ Runtime/                   # init + composition root tối thiểu
+├─ game.ui/
+│  └─ Runtime/                   # Toast / MessageOverlay contracts + presenters
+└─ game.assetbundles/
+   ├─ 00_local/
+   │  └─ ui/shell/               # Loading + recovery, scene-wired
+   ├─ 01_init/
+   │  └─ ui/00_shared/           # Toast + dialog + global shell
+   └─ 02_partial/                # feature assets được thêm theo project
+
+Packages/
+├─ manifest.json                 # Unity/public deps
+└─ packages-lock.json
+
+Không còn:
+├─ Packages/game-packages
+├─ Packages/vfx-packages
+└─ .gitmodules</div>
+        <div>
+          <div class="callout">
+            <strong>Ba capability root, không phải framework layer:</strong>
+            <code>game.core</code> giữ primitives; <code>game.bootstrap</code> giữ boot;
+            <code>game.ui</code> giữ UI shell trung tính. Business module không nằm trong template.
+          </div>
+          <div class="callout warn" style="margin-top:14px">
+            <strong>Không copy package code.</strong> Chỉ viết implementation template-native nhỏ nhất cho capability được giữ.
+            HyperEel/Cricket là nguồn học contract, không phải nguồn để chép namespace, address hay module.
+          </div>
+          <table style="margin-top:14px">
+            <thead><tr><th>Surface hiện tại</th><th>Đích</th></tr></thead>
+            <tbody>
+              <tr><td>Jigsaw shop / quest / chapter / gameplay</td><td>Delete khỏi template</td></tr>
+              <tr><td>Toast / MessageOverlay / loading shell</td><td>Template-native trong <code>game.ui</code></td></tr>
+              <tr><td>Auth / networking / backend gateway</td><td>Không có mặc định; add-on theo project</td></tr>
+              <tr><td>VFX third-party pack</td><td>Không có mặc định</td></tr>
+              <tr><td>DT / DA primitives</td><td>Giữ trong <code>game.core</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="roadmap">
+      <p class="section-kicker">03 · Executable todo list</p>
+      <h2>Changeset nhỏ, gate rõ</h2>
+
+      <article class="phase">
+        <header class="phase-head">
+          <span class="phase-no">C1</span>
+          <div><h3>Khôi phục compile baseline</h3><small>Không refactor khi baseline còn đỏ</small></div>
+          <span class="pill good">Passed · 2026-10-25</span>
+        </header>
+        <div class="phase-body">
+          <div class="task"><input id="c1-1" data-task data-complete type="checkbox"><label for="c1-1">Sửa <code>wnamespace</code> → <code>namespace</code> trong <code>PopupNoAdsData.cs</code>.<small>One-line syntax repair; không thay behavior.</small></label></div>
+          <div class="task"><input id="c1-2" data-task data-complete type="checkbox"><label for="c1-2">Chạy Unity batch compile với hai submodule ở đúng pinned commit.<small>Ghi toàn bộ <code>error CS</code>, không coi launcher exit là proof.</small></label></div>
+          <div class="task"><input id="c1-3" data-task data-complete type="checkbox"><label for="c1-3">Lặp lại cho tới khi compile sạch hoặc có inventory lỗi mới được owner phân loại.<small>Không bắt đầu C2 khi lỗi nền chưa được hiểu.</small></label></div>
+          <div class="task"><input id="c1-g" data-task data-complete type="checkbox"><label for="c1-g"><strong>Gate C1:</strong> Unity compile không có <code>error CS</code>.</label></div>
+        </div>
+      </article>
+
+      <article class="phase">
+        <header class="phase-head">
+          <span class="phase-no">C2</span>
+          <div><h3>Đóng băng dependency map</h3><small>Evidence trước khi move/delete</small></div>
+          <span class="pill warn">Mapped · report deferred</span>
+        </header>
+        <div class="phase-body">
+          <div class="task"><input id="c2-1" data-task data-complete type="checkbox"><label for="c2-1">Lập bảng mọi assembly reference <code>com.paul.*</code> và C# consumer theo root.<small>Đã map 18 asmdef refs và 87 C# files; inventory: <code>docs/stories/package-exit/dependency-inventory.md</code>.</small></label></div>
+          <div class="task"><input id="c2-2" data-task data-complete type="checkbox"><label for="c2-2">Quét GUID từ scene, prefab, material, ScriptableObject tới hai package.<small>1.104 occurrences, 56 source files, 311 package GUID targets; gồm cả hard/soft refs và Addressables.</small></label></div>
+          <div class="task"><input id="c2-3" data-task data-complete type="checkbox"><label for="c2-3">Gắn mỗi consumer một disposition: <code>KEEP-REWRITE</code>, <code>DELETE-LEGACY</code>, hoặc <code>PROJECT-ADDON</code>.</label></div>
+          <div class="task"><input id="c2-4" data-task type="checkbox"><label for="c2-4">Xuất baseline Addressables bằng <code>check.py --static</code> và build report mới.<small>Static: 0 errors / 495 warnings. Report bị defer: build dừng ở VFX <code>Square.shadergraph</code> GUID <code>3c0d5f6a750d0af418ec829d48071145</code>; C4 xoá group này rồi rebuild.</small></label></div>
+          <div class="task"><input id="c2-g" data-task data-complete type="checkbox"><label for="c2-g"><strong>Gate C2:</strong> không còn consumer “unknown”; mọi GUID/package ref có owner và disposition.</label></div>
+        </div>
+      </article>
+
+      <article class="phase">
+        <header class="phase-head">
+          <span class="phase-no">C3</span>
+          <div><h3>Dựng neutral bootstrap + UI shell</h3><small>Replacement nhỏ nhất trước khi xóa legacy</small></div>
+          <span class="pill good">Passed · 2026-10-25</span>
+        </header>
+        <div class="phase-body">
+          <div class="task"><input id="c3-1" data-task data-complete type="checkbox"><label for="c3-1">Tạo <code>game.bootstrap</code> assembly với init/composition root tối thiểu.<small>Không auth, backend, analytics, ads hoặc game state mặc định.</small></label></div>
+          <div class="task"><input id="c3-2" data-task data-complete type="checkbox"><label for="c3-2">Tạo <code>game.ui</code> assembly cho MessageOverlay, Toast và loading contract.<small>uGUI + TMP; không phụ thuộc <code>paul.game.visualization</code>.</small></label></div>
+          <div class="task"><input id="c3-3" data-task data-complete type="checkbox"><label for="c3-3">Đặt loading/recovery dưới <code>00_local/ui/shell</code>, Toast/dialog/global shell dưới <code>01_init/ui/00_shared</code>, và để SmartAddresser sở hữu group/address.<small>Static check: <code>game.local</code> 2 entries, <code>game.init</code> 3 entries, 0 errors.</small></label></div>
+          <div class="task"><input id="c3-4" data-task data-complete type="checkbox"><label for="c3-4">Boot scene mới chỉ đi qua neutral bootstrap và mở shell.<small>Không tiếp tục dùng Jigsaw lobby làm composition root.</small></label></div>
+          <div class="task"><input id="c3-g" data-task data-complete type="checkbox"><label for="c3-g"><strong>Gate C3:</strong> compile + EditMode + Play Mode boot tới neutral shell, không gọi Jigsaw business.<small>Compile 0; EditMode 10/10; PlayMode 1/1.</small></label></div>
+        </div>
+      </article>
+
+      <article class="phase">
+        <header class="phase-head">
+          <span class="phase-no">C4</span>
+          <div><h3>Retire Jigsaw + VFX consumers</h3><small>Xóa theo vertical slice, giữ GUID khi move</small></div>
+          <span class="pill good">Passed · 2026-10-25</span>
+        </header>
+        <div class="phase-body">
+          <div class="task"><input id="c4-1" data-task data-complete type="checkbox"><label for="c4-1">Xóa shop, quest, chapter, gameplay, Jigsaw event hubs và master data không thuộc template.<small>Đã xóa theo nguyên vertical slice; giữ loading scene trung lập.</small></label></div>
+          <div class="task"><input id="c4-2" data-task data-complete type="checkbox"><label for="c4-2">Thay consumer shell còn lại bằng implementation C3; không copy package module source.<small>Compile xanh; EditMode 10/10; PlayMode boot 1/1.</small></label></div>
+          <div class="task"><input id="c4-3" data-task data-complete type="checkbox"><label for="c4-3">Xóa hoặc thay thế material/shader/prefab đang hard-reference <code>vfx-packages</code>.<small>Quét 1.423 package GUID: 0 serialized consumer còn lại dưới <code>Assets/</code>.</small></label></div>
+          <div class="task"><input id="c4-4" data-task data-complete type="checkbox"><label for="c4-4">Dọn group <code>com.vfx.third_party</code> và 255 entries bằng Editor/layout pass.<small>Chỉ còn <code>game.local</code> + <code>game.init</code>; apply lần hai byte-identical.</small></label></div>
+          <div class="task"><input id="c4-g" data-task data-complete type="checkbox"><label for="c4-g"><strong>Gate C4:</strong> GUID grep không còn serialized ref tới package assets; Addressables static check không có error/missing package path.<small>Fresh build: 2 groups, 3 bundles, 0 errors, 0 warnings; hai report liên tiếp có group size giống nhau.</small></label></div>
+        </div>
+      </article>
+
+      <article class="phase">
+        <header class="phase-head">
+          <span class="phase-no">C5</span>
+          <div><h3>Gỡ package assemblies + gitlinks</h3><small>Dependency removal chỉ sau khi consumer bằng 0</small></div>
+          <span class="pill good">Passed · 2026-10-25</span>
+        </header>
+        <div class="phase-body">
+          <div class="task"><input id="c5-1" data-task data-complete type="checkbox"><label for="c5-1">Bỏ toàn bộ <code>com.paul.*</code> khỏi các <code>.asmdef</code> còn giữ lại.<small>Không còn runtime/editor assembly consumer; boundary test tiếp tục khóa invariant.</small></label></div>
+          <div class="task"><input id="c5-2" data-task data-complete type="checkbox"><label for="c5-2">Bỏ 7 dependency <code>com.paul.*</code> khỏi <code>Packages/manifest.json</code>; để Unity regenerate lockfile.<small>Lockfile mới không còn internal package hoặc local submodule path.</small></label></div>
+          <div class="task"><input id="c5-3" data-task data-complete type="checkbox"><label for="c5-3">Xóa hai gitlink <code>Packages/game-packages</code>, <code>Packages/vfx-packages</code> và xóa <code>.gitmodules</code>.<small>Product commit: <code>59a0465</code>.</small></label></div>
+          <div class="task"><input id="c5-4" data-task data-complete type="checkbox"><label for="c5-4">Fresh clone vào thư mục mới, không dùng <code>--recurse-submodules</code>; mở bằng Unity 6000.3.10f1.<small>Clone mới không có Library cache, <code>.gitmodules</code> hoặc package directories.</small></label></div>
+          <div class="task"><input id="c5-g" data-task data-complete type="checkbox"><label for="c5-g"><strong>Gate C5:</strong> package resolve + compile sạch trên fresh clone; <code>git submodule status</code> không còn output.<small>Unity exit 0, không <code>error CS</code>, EditMode 10/10, submodule output rỗng.</small></label></div>
+        </div>
+      </article>
+
+      <article class="phase">
+        <header class="phase-head">
+          <span class="phase-no">C6</span>
+          <div><h3>Chốt thin template + handoff Addressables</h3><small>Proof, docs và recipe add-on</small></div>
+          <span class="pill good">Passed · 2026-10-25</span>
+        </header>
+        <div class="phase-body">
+          <div class="task"><input id="c6-1" data-task data-complete type="checkbox"><label for="c6-1">Ghi decision package boundary và cập nhật project brief/build instructions.<small>Decision 0008, architecture, onboarding, knowledge, rules và agent guidance đã rebaseline theo tree package-free.</small></label></div>
+          <div class="task"><input id="c6-2" data-task data-complete type="checkbox"><label for="c6-2">Ghi recipe Git UPM cho networking-on-demand; template không cài package đó.<small><code>docs/architecture/networking-on-demand.md</code>; API skills dừng khi config còn unconfigured.</small></label></div>
+          <div class="task"><input id="c6-3" data-task data-complete type="checkbox"><label for="c6-3">Chạy compile, EditMode, boot, Addressables static + build report/diff.<small>Compile exit 0; EditMode 10/10; PlayMode 1/1; report <code>13.39.02</code> có 2 group / 3 bundle / 0.02 MB, byte-identical 2/2.</small></label></div>
+          <div class="task"><input id="c6-4" data-task data-complete type="checkbox"><label for="c6-4">Tiếp tục modernization tier/group theo <a href="./unity-template-addressables-plan.html">Addressables plan</a> sau khi package paths biến mất.<small>P1 và local P2 baseline complete; P3–P7 demand-driven, <code>02_partial</code> chờ feature đầu tiên.</small></label></div>
+          <div class="task"><input id="c6-g" data-task data-complete type="checkbox"><label for="c6-g"><strong>Gate C6:</strong> template bootable, package-free mặc định, asset delivery có bằng chứng và docs phản ánh đúng code.<small>Gate passed; platform/HAR được defer minh bạch đến khi có target và remote feature.</small></label></div>
+        </div>
+      </article>
+    </section>
+
+    <section id="diffs">
+      <p class="section-kicker">04 · Reviewable implementation shape</p>
+      <h2>Diff dự kiến trước khi thi công</h2>
+      <div class="two-col">
+        <article class="card">
+          <h3>C1 — compile repair</h3>
+          <pre><span class="minus">-wnamespace Game.Lobby.Visualization.Runtime...</span>
+<span class="plus">+namespace Game.Lobby.Visualization.Runtime...</span></pre>
+        </article>
+        <article class="card">
+          <h3>C5 — xóa .gitmodules</h3>
+          <pre><span class="minus">-[submodule "Packages/game-packages"]</span>
+<span class="minus">-  path = Packages/game-packages</span>
+<span class="minus">-  url = https://github.com/hoangphuc25071995/game-packages.git</span>
+<span class="minus">-[submodule "Packages/vfx-packages"]</span>
+<span class="minus">-  path = Packages/vfx-packages</span>
+<span class="minus">-  url = https://github.com/hoangphuc25071995/vfx-packages.git</span></pre>
+        </article>
+      </div>
+
+      <article class="card" style="margin-top:14px">
+        <h3>C5 — manifest removals</h3>
+        <pre><span class="minus">-"com.paul.common.compile_service": "file:game-packages/com.paul.common.compileservice",</span>
+<span class="minus">-"com.paul.common.core": "file:game-packages/com.paul.common.core",</span>
+<span class="minus">-"com.paul.common.singletons": "file:game-packages/com.paul.common.singletons",</span>
+<span class="minus">-"com.paul.game.shared": "file:game-packages/paul.game.shared",</span>
+<span class="minus">-"com.paul.game.visualization": "file:game-packages/paul.game.visualization",</span>
+<span class="minus">-"com.paul.vfx.shared": "file:vfx-packages/com.paul.vfx.shared",</span>
+<span class="minus">-"com.paul.vfx.thirdparty": "file:vfx-packages/com.paul.vfx.thirdparty",</span></pre>
+      </article>
+
+      <div class="two-col" style="margin-top:14px">
+        <article class="card">
+          <h3>Không có trong template mặc định</h3>
+          <pre><span class="dim">// Packages/manifest.json</span>
+<span class="dim">// Không có hypereel networking/common-core entry.</span>
+<span class="dim">// Không có backend cho tới khi feature đầu tiên cần nó.</span></pre>
+        </article>
+        <article class="card">
+          <h3>Recipe tương lai — API đầu tiên</h3>
+          <pre><span class="plus">+"hypereel.base.networking-v2":</span>
+<span class="plus">+  "https://github.com/hype-reel/HypeBase.Core.git</span>
+<span class="plus">+   ?path=/hypereel.base.networking-v2#&lt;commit-sha&gt;"</span></pre>
+          <p style="margin-top:12px">Nếu package cần một Git package khác, project manifest phải khai báo trực tiếp. Không dựa vào Git dependency transitively trong <code>package.json</code>.</p>
+        </article>
+      </div>
+
+      <div class="callout warn" style="margin-top:14px">
+        <strong>Commit policy:</strong> C1–C6 là changeset riêng. Không squash toàn bộ migration thành một commit;
+        mỗi gate phải có thể bisect và revert độc lập mà không làm mất GUID ngoài ý muốn.
+      </div>
+    </section>
+
+    <section id="gates">
+      <p class="section-kicker">05 · Acceptance gates</p>
+      <h2>Không “done” bằng suy luận</h2>
+      <div class="gate-grid">
+        <article class="gate"><span class="pill good">Compile</span><h3>Unity Roslyn sạch</h3><p>Unity 6000.3.10f1 batch/Editor compile; log mới không có <code>error CS</code>.</p></article>
+        <article class="gate"><span class="pill good">Fresh clone</span><h3>Không cần private repo</h3><p>Clone main repo vào path mới, không recurse submodule, Package Manager resolve thành công.</p></article>
+        <article class="gate"><span class="pill good">Tests</span><h3>Core contract không regress</h3><p><code>game.core.tests.editmode</code> pass; zero-test run không được tính là pass.</p></article>
+        <article class="gate"><span class="pill good">Boot</span><h3>Neutral shell xuất hiện</h3><p>Loading scene đi vào template bootstrap/UI shell, không cần lobby/business Jigsaw.</p></article>
+        <article class="gate"><span class="pill good">Addressables</span><h3>Không còn package paths</h3><p><code>check.py --static</code> exit 0 và không có entry trỏ vào <code>Packages/com.paul*</code>.</p></article>
+        <article class="gate"><span class="pill good">Git</span><h3>Submodule bằng zero</h3><p>Không còn <code>.gitmodules</code>, gitlink hoặc hướng dẫn <code>--recurse-submodules</code> trong active docs.</p></article>
+      </div>
+    </section>
+
+    <section id="risks">
+      <p class="section-kicker">06 · Risk controls</p>
+      <h2>Những chỗ dễ xóa nhầm</h2>
+      <div class="risk-grid">
+        <article class="risk"><span class="pill red">High</span><h3>Serialized GUIDs</h3><p>Prefab/scene/material có thể compile sạch nhưng mất reference. GUID grep + Editor evidence là bắt buộc trước và sau mỗi move/delete.</p></article>
+        <article class="risk"><span class="pill red">High</span><h3>VFX bundle fan-out</h3><p>255 package entries và hard refs shader/material có thể kéo bundle hoặc tạo Missing Shader sau khi package biến mất.</p></article>
+        <article class="risk"><span class="pill warn">Medium</span><h3>Bootstrap coupling</h3><p>Legacy boot hiện authenticate, build scopes và load lobby. Neutral boot phải thay luồng trước khi xóa assembly nguồn.</p></article>
+        <article class="risk"><span class="pill warn">Medium</span><h3>Tooling loss</h3><p>Một số Addressables menus nằm trong legacy shared code. Chỉ giữ/rewrite tool thực sự cần; Python checker vẫn là proof độc lập.</p></article>
+        <article class="risk"><span class="pill warn">Medium</span><h3>Git UPM monorepo cost</h3><p>Nhiều package con từ cùng Git repo khiến Unity clone repo nhiều lần. Chỉ thêm package cụ thể hoặc dùng private registry khi số package tăng.</p></article>
+        <article class="risk"><span class="pill">Control</span><h3>No speculative dependencies</h3><p>Không thêm networking/common core trong cleanup. Recipe tồn tại nhưng dependency chỉ xuất hiện cùng feature sử dụng nó.</p></article>
+      </div>
+    </section>
+
+    <section id="signoff">
+      <p class="section-kicker">07 · Owner sign-off</p>
+      <h2>Checklist nghiệm thu hướng đi</h2>
+      <article class="phase">
+        <div class="phase-body">
+          <div class="task"><input id="s-1" data-task type="checkbox"><label for="s-1">Chấp nhận target tree gồm <code>game.core</code>, <code>game.bootstrap</code>, <code>game.ui</code> và một Addressables root.</label></div>
+          <div class="task"><input id="s-2" data-task type="checkbox"><label for="s-2">Chấp nhận xóa Jigsaw business khỏi template thay vì giữ làm sample mặc định.</label></div>
+          <div class="task"><input id="s-3" data-task type="checkbox"><label for="s-3">Chấp nhận xóa cả hai submodule sau khi consumer/GUID count về zero.</label></div>
+          <div class="task"><input id="s-4" data-task type="checkbox"><label for="s-4">Chấp nhận không cài HyperEel package mặc định; API feature đầu tiên mới thêm Git UPM dependency.</label></div>
+          <div class="task"><input id="s-5" data-task type="checkbox"><label for="s-5">Chấp nhận C1 là bước thi công đầu tiên: sửa compile typo và lấy baseline xanh.</label></div>
+        </div>
+      </article>
+      <div class="callout" style="margin-top:15px">
+        Khi năm mục sign-off được tick, task kế tiếp là <strong>C1 — Compile Baseline</strong>.
+        Không có thay đổi package/submodule nào trước khi C1 và C2 qua gate.
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p><strong>Artifact:</strong> <code>artifacts/unity-template-package-exit-plan.html</code></p>
+      <p>Created for local approval · baseline <code>5658e8d</code> · checklist state is stored only in this browser via <code>localStorage</code>.</p>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      const key = "unity-template-package-exit-plan:v7";
+      const tasks = Array.from(document.querySelectorAll("input[data-task]"));
+      const bar = document.getElementById("progressBar");
+      const text = document.getElementById("progressText");
+      const reset = document.getElementById("resetButton");
+
+      const read = () => {
+        try { return JSON.parse(localStorage.getItem(key) || "{}"); }
+        catch { return {}; }
+      };
+
+      const update = () => {
+        const state = Object.fromEntries(tasks.map(task => [task.id, task.checked]));
+        localStorage.setItem(key, JSON.stringify(state));
+        const done = tasks.filter(task => task.checked).length;
+        const pct = tasks.length ? Math.round(done * 100 / tasks.length) : 0;
+        text.textContent = `${done} / ${tasks.length}`;
+        bar.style.width = `${pct}%`;
+      };
+
+      const state = read();
+      tasks.forEach(task => {
+        task.checked = Object.prototype.hasOwnProperty.call(state, task.id)
+          ? Boolean(state[task.id])
+          : task.hasAttribute("data-complete");
+        task.addEventListener("change", update);
+      });
+
+      reset.addEventListener("click", () => {
+        if (!window.confirm("Reset toàn bộ checklist local?")) return;
+        tasks.forEach(task => { task.checked = false; });
+        update();
+      });
+
+      update();
+    })();
+  </script>
+</body>
+</html>

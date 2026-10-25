@@ -1,0 +1,99 @@
+// ============================================================
+// Template: Request tests for one API area (EditMode)
+// ============================================================
+// Ported from cricket-city-unity .claude/skills/api-codegen/References/test.cs.template
+// @ 8da403c97; rewritten for com.paul.common.networking @ beb0af1.
+//
+// Placeholders:
+//   {{test_namespace}}     — config.test_namespace
+//   {{request_namespace}}  — full namespace of the Request/Response classes
+//   {{Area}}               — e.g. Reward
+//   {{Name}}               — e.g. ClaimReward
+//   {{endpoint_path}}      — the GetPath() value
+//   {{sample_json}}        — the captured sample if one exists, else a realistic payload
+//   {{assertions}}         — one Assert per top-level field
+//
+// Assembly: config.test_assembly (game.lobby.shared.tests.editmode), created by
+// the first endpoint — see api-codegen SKILL.md, Output Files. Append to
+// {{Area}}RequestTests.cs. Style follows
+// Assets/game.core/Tests/EditMode/Data/DataTableTests.cs: sealed class,
+// usings inside the namespace, Assert.That constraints, no Arrange/Act/Assert comments.
+// ============================================================
+
+namespace {{test_namespace}}
+{
+    using Newtonsoft.Json;
+    using NUnit.Framework;
+    using Paul.Base.Networking.Runtime;
+    using {{request_namespace}};
+
+    public sealed class {{Area}}RequestTests
+    {
+        // No source generator: the route lives in hand-written overrides, so pin it.
+        [Test]
+        public void {{Name}}_Route_MatchesContract()
+        {
+            var request = new Request{{Name}} { RewardId = "r-1" };
+
+            Assert.That(request.GetRequestMethod(), Is.EqualTo(OperationMethod.Post));
+            Assert.That(request.GetPath(), Is.EqualTo("{{endpoint_path}}"));
+            Assert.That(request.GetResources()["reward_id"], Is.EqualTo("r-1"));
+        }
+
+        [Test]
+        public void {{Name}}_Deserializes_AllFields()
+        {
+            const string json = @"{{sample_json}}";
+
+            var response = JsonConvert.DeserializeObject<Response{{Name}}>(json);
+
+            Assert.That(response, Is.Not.Null);
+            Assert.That(response.Success, Is.True);
+            Assert.That(response.Data, Is.Not.Null);
+            {{assertions}}
+        }
+
+        [Test]
+        public void {{Name}}_NullResult_Deserializes()
+        {
+            const string json = @"{ ""success"": true, ""message"": ""OK"", ""result"": null }";
+
+            var response = JsonConvert.DeserializeObject<Response{{Name}}>(json);
+
+            Assert.That(response, Is.Not.Null);
+            Assert.That(response.Data, Is.Null);
+        }
+
+        [Test]
+        public void {{Name}}_RefusalEnvelope_KeepsMessage()
+        {
+            const string json = @"{ ""success"": false, ""message"": ""Already claimed"", ""error_code"": null, ""result"": null }";
+
+            var response = JsonConvert.DeserializeObject<Response{{Name}}>(json);
+
+            Assert.That(response.Success, Is.False);
+            Assert.That(response.Message, Is.EqualTo("Already claimed"));
+        }
+
+        // Only for a request that carries a JSON body (IJsonDataRequest).
+        [Test]
+        public void {{Name}}_Body_DoesNotCarryAuthOrHeaders()
+        {
+            var request = new Request{{Name}} { RewardId = "r-1", Token = "Bearer secret-token" };
+
+            var body = JsonConvert.SerializeObject(request);
+
+            Assert.That(body, Does.Not.Contain("secret-token"));
+            Assert.That(body, Does.Not.Contain("Authorization"));
+            Assert.That(body, Does.Not.Contain("r-1"));
+        }
+    }
+}
+
+// ---- Rules ----
+// - Every request: the route test. Every response: full payload + null result +
+//   refusal envelope. Every body-carrying request: the body-leak test.
+// - Inline JSON, not external files, unless a captured sample is the fixture.
+// - Collections: assert count and the first element; nested objects: not null plus
+//   one field.
+// - These tests touch no network; the transport (ApiClient) is not unit-tested here.

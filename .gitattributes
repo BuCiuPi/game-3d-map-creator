@@ -1,0 +1,21 @@
+# Append-at-top logs: never let a merge silently DROP rows.
+#
+# These files are written the same way (newest row at the top of a markdown
+# table), so two branches that both record work produce overlapping inserts at
+# the same line. Git reports that as a conflict, and the natural resolutions
+# ("take ours" / "take theirs") discard the other side's rows with nothing left
+# behind to notice.
+#
+# `merge=union` is git's built-in driver: it keeps BOTH sides' lines instead of
+# raising a conflict. For an append-only log that is the correct semantic: a row
+# is a fact that happened, and two branches recording different facts is not a
+# disagreement to resolve.
+#
+# Tradeoff: union resolves without a conflict marker, so the result is not
+# automatically ordered, and a prose edit made on both branches is duplicated
+# rather than merged. Duplicated prose is visible on the next read; a dropped row
+# is not. After any merge that touches these files, re-sort rows newest-first and
+# check that the row count is the full union.
+docs/INTAKE_LOG.md  merge=union
+docs/TRACE_LOG.md   merge=union
+docs/TEST_MATRIX.md merge=union

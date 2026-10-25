@@ -1,0 +1,20 @@
+{
+  "name": "game.bootstrap.tests.playmode",
+  "rootNamespace": "Game.Bootstrap.Tests.PlayMode",
+  "references": [
+    "game.bootstrap.runtime",
+    "game.ui.runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

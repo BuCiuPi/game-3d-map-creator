@@ -1,0 +1,9 @@
+{
+  "_comment": "Read by .claude/hooks/intake-gate.js and trace-gate.js; any missing key falls back to these defaults. harness-bootstrap sets guardedRoots to this repository's code roots (for example [\"src\", \"scripts\"]). While guardedRoots is empty, every path outside exemptRoots is gated. Markdown and .txt files are not gated, except under guardedDocRoots (for repositories whose docs are the product, e.g. [\"docs/design\"]).",
+  "guardedRoots": ["Assets", "Packages", "ProjectSettings"],
+  "guardedDocRoots": [],
+  "exemptRoots": ["docs", ".claude"],
+  "intakeWindowHours": 24,
+  "traceWindowHours": 72,
+  "traceMinAgeMinutes": 90
+}

@@ -1,0 +1,31 @@
+{
+  "_comment": "Template: mock response for EditMode tests or a Local/ gateway. Ported from cricket-city-unity .claude/skills/api-codegen/References/mock-json.json.template @ 8da403c97; rewritten for com.paul.common.networking @ beb0af1.",
+  "_usage": "Use ONLY when no captured sample exists; a captured sample is always preferred. Save under config.mock_json_path. Remove the _comment, _usage and _rules keys from the final file.",
+  "_rules": [
+    "Match the ResponseBase<T> envelope exactly: success, message, status, error_code, result",
+    "status is overwritten with the HTTP code by the package; keep it for readability only",
+    "Populate 'result' with realistic data matching the response schema",
+    "Use realistic string values (not 'string' or 'test') and realistic numbers",
+    "Arrays have 1-2 items; nested objects are fully populated",
+    "Mark every field whose type was guessed in the codegen summary"
+  ],
+
+  "success": true,
+  "status": 200,
+  "message": "OK",
+  "error_code": null,
+  "result": {
+    "reward_id": "daily_login_03",
+    "count": 42,
+    "is_active": true,
+    "items": [
+      {
+        "id": "item_001",
+        "name": "First Item"
+      }
+    ],
+    "details": {
+      "sub_field": "nested_value"
+    }
+  }
+}

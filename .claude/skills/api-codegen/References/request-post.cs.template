@@ -1,0 +1,116 @@
+// ============================================================
+// Template: Request + Response for POST or PUT
+// ============================================================
+// Ported from cricket-city-unity .claude/skills/api-codegen/References/request-post.cs.template
+// @ 8da403c97; rewritten for com.paul.common.networking @ beb0af1.
+//
+// Placeholders (from project config + contract source):
+//   {{framework_usings}}   — framework using directives from project config
+//   {{request_namespace}}  — config.request_namespace
+//   {{Name}}               — e.g. ClaimReward (full class name = Request{{Name}})
+//   {{endpoint_path}}      — e.g. reward/api/v1/rewards/{reward_id}/claim/
+//   {{OperationMethod}}    — Post or Put
+//   {{DataType}}           — e.g. RewardApiData, or object for success-only
+//   {{path_params}}        — path-id properties (if any)
+//   {{body_properties}}    — [JsonProperty] properties from the body schema
+// ============================================================
+//
+// FIRST DECIDE: does this endpoint actually send a JSON body?
+//
+//   Body fields present  -> IJsonDataRequest  + [JsonObject(MemberSerialization.OptIn)]
+//   Path/query params only, no body
+//   (yes, even for POST) -> IRestRequest      + no [JsonObject] needed
+//
+// No source generator exists: override the RequestBase methods yourself.
+// ============================================================
+
+namespace {{request_namespace}}
+{
+    {{framework_usings}}
+
+    // ---- Variant 1: WITH a JSON body -> IJsonDataRequest ----
+
+    /// <summary>
+    /// <c>{{OperationMethod}} /{{endpoint_path}}</c> — one line on what it does.
+    /// </summary>
+    // SECURITY — NOT optional. Both network controllers build the body with
+    // JsonConvert.SerializeObject(request): the WHOLE object. Without OptIn the
+    // bearer Token, path ids and any public member a later base class adds ship
+    // inside every body. [JsonIgnore] on Token closes one member; OptIn closes
+    // the class of bug. Pinned by {{Name}}_Body_DoesNotCarryAuthOrHeaders.
+    [JsonObject(MemberSerialization.OptIn)]
+    public class Request{{Name}} : RequestBase, IJsonDataRequest, ITokenAuthenticatedRequest
+    {
+{{path_params}}
+{{body_properties}}
+
+        [JsonIgnore]
+        public string Token { get; set; }
+
+        public override OperationMethod GetRequestMethod() => OperationMethod.{{OperationMethod}};
+
+        public override string GetPath() => "{{endpoint_path}}";
+
+        public override Dictionary<string, string> GetResources() => new()
+        {
+            ["reward_id"] = RewardId,
+        };
+
+        public override Dictionary<string, string> GetHeaders() => new()
+        {
+            [Const.JwtAuthKeyHeader] = Token,
+        };
+    }
+
+    public class Response{{Name}} : ResponseBase<{{DataType}}>
+    {
+    }
+
+
+    // ---- Variant 2: NO body (path params only) -> IRestRequest ----
+
+    public class Request{{Name}} : RequestBase, IRestRequest, ITokenAuthenticatedRequest
+    {
+        [JsonIgnore]
+        public string SessionId { get; set; }
+
+        [JsonIgnore]
+        public string Token { get; set; }
+
+        public override OperationMethod GetRequestMethod() => OperationMethod.{{OperationMethod}};
+
+        public override string GetPath() => "{{endpoint_path}}";
+
+        public override Dictionary<string, string> GetResources() => new()
+        {
+            ["session_id"] = SessionId,
+        };
+
+        public override Dictionary<string, string> GetHeaders() => new()
+        {
+            [Const.JwtAuthKeyHeader] = Token,
+        };
+    }
+}
+
+// ---- Path param block (include per path param) ----
+//         [JsonIgnore]
+//         public string RewardId { get; set; }
+
+// ---- Body property block (include per request-body field) ----
+//         [JsonProperty("multiplier")]
+//         public int Multiplier { get; set; }
+
+// ---- Notes ----
+// - Under OptIn, a body property WITHOUT [JsonProperty] does not serialize at all.
+//   Every field the server expects needs one — this is the failure mode OptIn trades for.
+// - [JsonIgnore] every non-body member (Token, path ids, query values) so the
+//   shape stays obvious to the next reader even though OptIn already excludes them.
+// - A request must implement IRestRequest, IJsonDataRequest or IFieldDataSendRequest;
+//   with none, the UnityWebRequest controller throws ArgumentOutOfRangeException.
+// - Form bodies (IFieldDataSendRequest.DataField): string values only — anything
+//   else goes through BinaryFormatter.
+// - ApiClient strips a leading '/' and always appends a trailing '/'.
+// - Routes follow captured samples, not the design doc and not the spec.
+// - Add `using System.Collections.Generic;` beside the framework usings (inside
+//   the namespace, as every file in Assets/game.shared/ does).

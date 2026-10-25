@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Unity Template — Addressables Modernization Plan</title>
+  <style>
+    :root {
+      --bg: #080b12;
+      --panel: #101622;
+      --panel-2: #151d2c;
+      --line: #273248;
+      --text: #edf2ff;
+      --muted: #9aa9c2;
+      --cyan: #55d9e8;
+      --blue: #73a7ff;
+      --violet: #b195ff;
+      --green: #76dfa4;
+      --amber: #f2c66d;
+      --red: #ff8396;
+      --shadow: 0 18px 50px rgba(0, 0, 0, .28);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(85, 217, 232, .13), transparent 28rem),
+        radial-gradient(circle at 88% 8%, rgba(177, 149, 255, .11), transparent 30rem),
+        linear-gradient(180deg, #0a0e17 0%, var(--bg) 54%, #070a10 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.58;
+    }
+
+    a { color: var(--cyan); }
+
+    code {
+      color: #d9e4ff;
+      background: rgba(115, 167, 255, .09);
+      border: 1px solid rgba(115, 167, 255, .17);
+      border-radius: 6px;
+      padding: .12rem .38rem;
+      font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      font-size: .9em;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 34px));
+      margin: 0 auto;
+      padding: 36px 0 80px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 52px;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: linear-gradient(135deg, rgba(21, 29, 44, .97), rgba(12, 17, 28, .94));
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -95px;
+      top: -125px;
+      width: 330px;
+      height: 330px;
+      border: 52px solid rgba(85, 217, 232, .055);
+      border-radius: 46% 54% 62% 38%;
+      transform: rotate(24deg);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--cyan);
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 850px;
+      margin: 0;
+      font-size: clamp(2.3rem, 6vw, 5rem);
+      line-height: .98;
+      letter-spacing: -.055em;
+    }
+
+    .hero-copy {
+      max-width: 780px;
+      margin: 24px 0 0;
+      color: #bdc8dc;
+      font-size: 1.05rem;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .chip {
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #cbd6e9;
+      background: rgba(255, 255, 255, .025);
+      font-size: .84rem;
+    }
+
+    .chip.good { border-color: rgba(118, 223, 164, .35); color: var(--green); }
+    .chip.warn { border-color: rgba(242, 198, 109, .38); color: var(--amber); }
+
+    .meta-grid,
+    .cards,
+    .gate-grid,
+    .risk-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .meta-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      margin: 18px 0 0;
+    }
+
+    .metric {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(16, 22, 34, .78);
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--text);
+      font-size: 1.35rem;
+      letter-spacing: -.03em;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    nav {
+      position: sticky;
+      top: 12px;
+      z-index: 5;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      margin: 18px 0 34px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(9, 13, 21, .88);
+      backdrop-filter: blur(18px);
+      scrollbar-width: none;
+    }
+
+    nav a {
+      flex: 0 0 auto;
+      padding: 8px 11px;
+      border-radius: 8px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .82rem;
+      font-weight: 700;
+    }
+
+    nav a:hover { color: var(--text); background: var(--panel-2); }
+
+    section {
+      scroll-margin-top: 88px;
+      margin-top: 48px;
+    }
+
+    .section-kicker {
+      margin: 0 0 7px;
+      color: var(--blue);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      font-size: clamp(1.6rem, 3vw, 2.5rem);
+      letter-spacing: -.035em;
+    }
+
+    h3 { margin: 0 0 10px; font-size: 1rem; }
+    p { margin: 0 0 12px; }
+
+    .callout {
+      padding: 20px 22px;
+      border: 1px solid rgba(85, 217, 232, .26);
+      border-left: 4px solid var(--cyan);
+      border-radius: 12px;
+      color: #c8d6ea;
+      background: rgba(85, 217, 232, .055);
+    }
+
+    .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .card {
+      padding: 21px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(21, 29, 44, .9), rgba(14, 19, 30, .9));
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .12);
+    }
+
+    .card p,
+    .card li { color: #aebbd0; }
+
+    .card ul,
+    .phase ul,
+    .gate ul {
+      margin: 10px 0 0;
+      padding-left: 19px;
+    }
+
+    .card li,
+    .phase li,
+    .gate li { margin: 6px 0; }
+
+    .architecture {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: stretch;
+      gap: 12px;
+    }
+
+    .arch-node {
+      min-height: 154px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+    }
+
+    .arch-node strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--cyan);
+    }
+
+    .arch-node span { color: var(--muted); font-size: .88rem; }
+
+    .arrow {
+      align-self: center;
+      color: var(--violet);
+      font-size: 1.6rem;
+      font-weight: 900;
+    }
+
+    .timeline {
+      position: relative;
+      display: grid;
+      gap: 14px;
+      margin-left: 13px;
+      padding-left: 31px;
+      border-left: 1px solid #34405a;
+    }
+
+    .phase {
+      position: relative;
+      display: grid;
+      grid-template-columns: 92px 1fr 235px;
+      gap: 18px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(16, 22, 34, .84);
+    }
+
+    .phase::before {
+      content: "";
+      position: absolute;
+      left: -39px;
+      top: 29px;
+      width: 13px;
+      height: 13px;
+      border: 3px solid var(--bg);
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 1px var(--cyan);
+    }
+
+    .phase-id {
+      color: var(--cyan);
+      font-size: 1.45rem;
+      font-weight: 900;
+      letter-spacing: -.04em;
+    }
+
+    .phase-copy h3 { font-size: 1.08rem; }
+    .phase-copy p { color: var(--muted); }
+
+    .phase-gate {
+      padding: 13px 15px;
+      border: 1px solid rgba(118, 223, 164, .2);
+      border-radius: 11px;
+      color: #bfe8ce;
+      background: rgba(118, 223, 164, .055);
+      font-size: .84rem;
+    }
+
+    .phase-gate b {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--green);
+      font-size: .7rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .rule-table {
+      width: 100%;
+      overflow: hidden;
+      border-collapse: separate;
+      border-spacing: 0;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(16, 22, 34, .8);
+    }
+
+    .rule-table th,
+    .rule-table td {
+      padding: 13px 15px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .rule-table tr:last-child td { border-bottom: 0; }
+    .rule-table th { color: var(--muted); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
+    .rule-table td:first-child { width: 76px; color: var(--amber); font-weight: 900; }
+    .rule-table td:last-child { color: #aebbd0; }
+
+    .gate-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .gate {
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(16, 22, 34, .78);
+    }
+
+    .gate h3 { color: var(--green); }
+    .gate p, .gate li { color: #aebbd0; }
+
+    .risk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .risk {
+      display: grid;
+      grid-template-columns: 12px 1fr;
+      gap: 13px;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: rgba(16, 22, 34, .7);
+    }
+
+    .risk-mark { border-radius: 9px; background: var(--amber); }
+    .risk.high .risk-mark { background: var(--red); }
+    .risk strong { display: block; margin-bottom: 3px; }
+    .risk span { color: var(--muted); font-size: .88rem; }
+
+    .decision {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 14px;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .decision:last-child { border-bottom: 0; }
+    .decision b { color: var(--blue); }
+    .decision span { color: #b7c3d7; }
+
+    footer {
+      margin-top: 58px;
+      padding: 24px 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .print-button {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 7;
+      padding: 11px 15px;
+      border: 1px solid rgba(85, 217, 232, .4);
+      border-radius: 999px;
+      color: #071014;
+      background: var(--cyan);
+      font: inherit;
+      font-size: .82rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    }
+
+    @media (max-width: 900px) {
+      .meta-grid { grid-template-columns: repeat(2, 1fr); }
+      .cards { grid-template-columns: 1fr; }
+      .architecture { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); text-align: center; }
+      .phase { grid-template-columns: 68px 1fr; }
+      .phase-gate { grid-column: 2; }
+    }
+
+    @media (max-width: 620px) {
+      .shell { width: min(100% - 22px, 1180px); padding-top: 12px; }
+      .hero { padding: 28px 22px; }
+      .meta-grid, .gate-grid, .risk-grid { grid-template-columns: 1fr; }
+      .phase { grid-template-columns: 1fr; }
+      .phase-gate { grid-column: 1; }
+      .decision { grid-template-columns: 1fr; }
+      .rule-table { display: block; overflow-x: auto; }
+    }
+
+    @media print {
+      :root { --bg: #fff; --panel: #fff; --panel-2: #f6f8fb; --line: #d7dce5; --text: #172033; --muted: #526077; }
+      body { background: #fff; color: var(--text); }
+      .shell { width: 100%; padding: 0; }
+      .hero, .card, .phase, .gate, .risk, .metric, .arch-node, .rule-table { box-shadow: none; background: #fff; break-inside: avoid; }
+      nav, .print-button { display: none; }
+      section { margin-top: 30px; }
+      code { color: #172033; background: #f3f5f8; }
+    }
+  </style>
+</head>
+<body>
+  <button class="print-button" type="button" onclick="window.print()">Print / Save PDF</button>
+  <main class="shell">
+    <header class="hero">
+      <p class="eyebrow">Local plan artifact · Read-only research complete</p>
+      <h1>Unity Template<br>Addressables Modernization</h1>
+      <p class="hero-copy">
+        Kế hoạch hiện đại hóa hạ tầng asset delivery của <code>unity-template</code>, học từ Cricket City
+        nhưng chỉ tiếp thu capability của HyperEel common core. Không sao chép YGG/package modules,
+        legacy address hay tool source.
+      </p>
+      <div class="chips">
+        <span class="chip good">Worktree baseline: clean</span>
+        <span class="chip">Unity 6000.3.10f1</span>
+        <span class="chip">Addressables 2.9.0</span>
+        <span class="chip">SmartAddresser pinned</span>
+        <span class="chip warn">Cricket re-check: features/G003 @ 8da403c</span>
+        <span class="chip good">P1/P2 baseline passed · package exit complete</span>
+        <span class="chip good">C8.1 service SDK prune passed</span>
+        <span class="chip good">C8.2A vendored asset prune passed</span>
+        <span class="chip good">C8.2B package baseline passed</span>
+      </div>
+    </header>
+
+    <div class="meta-grid" aria-label="Current state metrics">
+      <div class="metric"><strong>1</strong><span>Addressables profile</span></div>
+      <div class="metric"><strong>2</strong><span>Current asset groups</span></div>
+      <div class="metric"><strong>7</strong><span>Fresh Build Reports</span></div>
+      <div class="metric"><strong>Off</strong><span>Remote catalog</span></div>
+      <div class="metric"><strong>Off</strong><span>BuildWithPlayer</span></div>
+    </div>
+
+    <nav aria-label="Document navigation">
+      <a href="#north-star">North star</a>
+      <a href="#current">Current state</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#data-core">DT / DA</a>
+      <a href="#ui-shell">UI shell</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#asset-check">Asset check</a>
+      <a href="#gates">Gates</a>
+      <a href="#risks">Risks</a>
+      <a href="#decisions">Decisions</a>
+    </nav>
+
+    <section id="north-star">
+      <p class="section-kicker">01 · Direction</p>
+      <h2>North star</h2>
+      <div class="callout">
+        Một content pipeline có ownership rõ: toàn bộ deliverable Addressable assets nằm dưới duy nhất
+        <code>Assets/game.assetbundles/{00_local,01_init,02_partial}</code>; tier folder quyết định
+        availability, layout rule quyết định group/address/label, runtime gateway sở hữu handle,
+        build pipeline tạo bằng chứng, và CI từ chối mọi dependency vi phạm contract.
+      </div>
+      <div class="cards" style="margin-top:14px">
+        <article class="card">
+          <h3>Học từ HyperEel Core</h3>
+          <ul>
+            <li>Typed/indexed data tables.</li>
+            <li>UI screen lifetime + child DI scope.</li>
+            <li>Addressables handle ownership.</li>
+            <li>Một build entry point có argument contract.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Không mang sang</h3>
+          <ul>
+            <li><code>YGG_Package</code> và sibling/add-on modules.</li>
+            <li>Namespace <code>YGG.*</code> / legacy addresses.</li>
+            <li>Dual build flow và double-build behavior.</li>
+            <li>Cricket-specific groups, labels, whitelist.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Scope clarification</h3>
+          <p>
+            Package exit đã hoàn tất tại <code>59a0465</code>: template không còn
+            <code>Packages/game-packages</code>, <code>Packages/vfx-packages</code>,
+            <code>file:</code> dependency hoặc internal package mặc định. Project con chỉ mount
+            capability qua Git UPM pin commit khi xuất hiện consumer thật.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="current">
+      <p class="section-kicker">02 · Evidence</p>
+      <h2>Current-state audit</h2>
+      <div class="cards">
+        <article class="card">
+          <h3>Configuration</h3>
+          <ul>
+            <li>Chỉ profile <code>Default</code>.</li>
+            <li>Remote catalog tắt.</li>
+            <li><code>BuildWithPlayer</code> tắt.</li>
+            <li>Hai group hiện tại: <code>game.local</code> và <code>game.init</code>, đều dùng Local Build/Load Path.</li>
+            <li>Hai fresh Build Report baseline: 2 group, 3 bundle, khoảng 0.02 MB; byte-identical 2/2 group.</li>
+            <li>Mọi Addressable source asset nằm dưới <code>Assets/game.assetbundles/{00_local,01_init}</code>; <code>02_partial</code> chỉ tạo khi feature đầu tiên xuất hiện.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Editor ownership</h3>
+          <ul>
+            <li><code>TemplateAddressablesSetup</code> là entry point setup/build của template.</li>
+            <li>SmartAddresser/layout metadata quyết định membership/address/label.</li>
+            <li><code>Game Template/Addressables/Apply Layout</code> idempotent; apply lần hai không đổi hash.</li>
+            <li>Không còn rule hoặc group theo album/stage/Jigsaw.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Runtime ownership</h3>
+          <ul>
+            <li><code>TemplateBootstrap</code> load đúng một global UI shell từ loading scene.</li>
+            <li>Bootstrap sở hữu <code>AsyncOperationHandle&lt;GameObject&gt;</code> và release cả success/failure path.</li>
+            <li>UI shell không chứa business, auth, backend hoặc scene router.</li>
+            <li>Raw Addressables usage của template tập trung tại bootstrap adapter.</li>
+          </ul>
+        </article>
+      </div>
+      <div class="callout" style="margin-top:14px">
+        <strong>Cross-session amendment — 2026-10-24:</strong>
+        Cricket HEAD <code>features/G003 @ 8da403c</code> và snapshot nghiên cứu gốc
+        <code>features/refactoring-development @ e933e56</code> đã diverge tại merge-base
+        <code>0a137149</code>; delta không được đọc như một changelog tuyến tính. Bốn group G003 nằm trong
+        <code>02_partial</code> nhưng đang dùng <code>Local.BuildPath/Local.LoadPath</code>, khác G001 Remote
+        và khác hành vi provisioner dự kiến. Đây là anomaly cần owner xác nhận, không phải pattern để học.
+        HyperEel common-core không có file delta trong lần re-check.
+      </div>
+    </section>
+
+    <section id="architecture">
+      <p class="section-kicker">03 · Target system</p>
+      <h2>Target architecture</h2>
+      <div class="architecture">
+        <div class="arch-node">
+          <strong>Content contract</strong>
+          <span>Một root <code>Assets/game.assetbundles</code>; các tier <code>00_local</code>, <code>01_init</code>, <code>02_partial</code> định nghĩa ownership và availability.</span>
+        </div>
+        <div class="arrow">→</div>
+        <div class="arch-node">
+          <strong>Deterministic layout</strong>
+          <span>Scoped SmartAddresser rules generate group, address and label. One GUID, one owner.</span>
+        </div>
+        <div class="arrow">→</div>
+        <div class="arch-node">
+          <strong>Release proof</strong>
+          <span>Build Report → check → audit → diff → HAR → CI gate.</span>
+        </div>
+      </div>
+      <div class="architecture" style="margin-top:12px">
+        <div class="arch-node">
+          <strong>Single bootstrap owner</strong>
+          <span>Initialize, catalog update, retry and error state live behind one service.</span>
+        </div>
+        <div class="arrow">→</div>
+        <div class="arch-node">
+          <strong>Runtime gateways</strong>
+          <span>Asset, instance, scene and dependency handles always have explicit owners.</span>
+        </div>
+        <div class="arrow">→</div>
+        <div class="arch-node">
+          <strong>Typed consumers</strong>
+          <span>Scene routes, master data and UI contexts do not format legacy address strings.</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="data-core">
+      <p class="section-kicker">04 · Core data</p>
+      <h2>DT / DA contract in the thin template</h2>
+      <div class="callout">
+        <code>DT_</code> và <code>DA_</code> chỉ là quy ước tên file để tìm kiếm. Semantics thật nằm ở type:
+        <code>DataTable&lt;TRow&gt;</code> là nhiều row cùng schema có stable ID và indexed lookup;
+        <code>DataAsset&lt;TData&gt;</code> là một typed aggregate/config payload. Delivery tier và lifetime không được suy ra từ prefix.
+      </div>
+      <div class="cards" style="margin-top:14px">
+        <article class="card">
+          <h3>DA · typed aggregate</h3>
+          <ul>
+            <li>Class <code>XxxDataAsset</code>; file <code>DA_Xxx.asset</code>.</li>
+            <li>Một config, catalog, route map hoặc presentation profile.</li>
+            <li>Runtime chỉ đọc; Editor importer mới được ghi.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>DT · typed row table</h3>
+          <ul>
+            <li>Class <code>XxxDataTable</code>; file <code>DT_Xxx.asset</code>.</li>
+            <li>Row có stable string ID; lazy dictionary index.</li>
+            <li>Null row, empty ID và duplicate ID là validation error.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Template boundary</h3>
+          <ul>
+            <li>Core chỉ chứa primitive, validation và tests.</li>
+            <li>Không ship DT/DA economy, quest, shop hay stage mẫu.</li>
+            <li>Gateway/scope tải asset sở hữu và release handle.</li>
+          </ul>
+        </article>
+      </div>
+      <table class="rule-table" style="margin-top:14px">
+        <thead><tr><th>Tier</th><th>DT / DA placement</th><th>Rule</th></tr></thead>
+        <tbody>
+          <tr><td>00</td><td><code>00_local/data/bootstrap/{assets,tables}</code></td><td>Chỉ boot-critical data ship cùng player. Data cần trước Addressables init phải scene/directly serialized.</td></tr>
+          <tr><td>01</td><td><code>01_init/shared/data/{assets,tables}</code></td><td>Shared data cần sau catalog/global init và trước feature entry.</td></tr>
+          <tr><td>02</td><td><code>02_partial/&lt;feature&gt;/data/{assets,tables}</code></td><td>Feature-owned data; load/release theo feature scope.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="ui-shell">
+      <p class="section-kicker">05 · Bootable experience</p>
+      <h2>Minimal UI shell included in the template</h2>
+      <div class="callout">
+        Thin core không có nghĩa là màn hình trắng khi boot lỗi. Template giữ đúng bốn UI primitives:
+        hai recovery surfaces concrete trong <code>00_local</code> và hai post-boot utilities trong
+        <code>01_init</code>. Mọi UI theo nghiệp vụ nằm trong feature module ở <code>02_partial</code>.
+      </div>
+      <table class="rule-table" style="margin-top:14px">
+        <thead><tr><th>Class</th><th>UI</th><th>Placement</th><th>Contract</th></tr></thead>
+        <tbody>
+          <tr><td>A</td><td>Boot LoadingOverlay</td><td><code>00_local/ui/shell/</code></td><td>Concrete neutral prefab, scene-wired; hoạt động trước auth, catalog và global DI.</td></tr>
+          <tr><td>A</td><td>Fatal/Recovery MessageOverlay</td><td><code>00_local/ui/shell/</code></td><td>Concrete neutral prefab với Retry/Reload; không phụ thuộc MessagePipe hoặc Addressables instantiate.</td></tr>
+          <tr><td>B</td><td>Toast</td><td><code>01_init/ui/00_shared/</code></td><td>Contract + concrete default tối thiểu; chỉ dùng sau khi global DI sẵn sàng.</td></tr>
+          <tr><td>B</td><td>Generic Message/Confirm Dialog</td><td><code>01_init/ui/00_shared/</code></td><td>Một dialog chung hỗ trợ message và 0–2 actions; game có thể tạo variant để theme.</td></tr>
+          <tr><td>C</td><td>Feature popup / feature loading</td><td><code>02_partial/&lt;feature&gt;/</code></td><td>VIP, shop, quest, liveops, map loading thuộc module nghiệp vụ, không nằm trong core template.</td></tr>
+          <tr><td>C</td><td>PopupManager placeholder</td><td>Không đưa vào template</td><td>Không có behavior core; tránh thêm manager chỉ để giữ hierarchy.</td></tr>
+        </tbody>
+      </table>
+      <div class="cards" style="margin-top:14px">
+        <article class="card"><h3>Tier A strategy</h3><p>Commit prefab game-owned độc lập và wire trực tiếp vào bootstrap scene. Không dùng package-owned prefab làm base của recovery path.</p></article>
+        <article class="card"><h3>Tier B strategy</h3><p>Template cung cấp default đủ chạy; project có thể tạo game-owned variant để đổi presentation mà giữ nguyên contract.</p></article>
+        <article class="card"><h3>Cricket lesson</h3><p>Cricket đặt Message/Toast/Loading trong <code>00_local</code>, nhưng auth failure có thể xảy ra trước global MessagePipe. Template phải tách recovery delivery khỏi post-boot messaging.</p></article>
+      </div>
+    </section>
+
+    <section id="roadmap">
+      <p class="section-kicker">06 · Execution</p>
+      <h2>Roadmap P0–P7</h2>
+      <div class="timeline">
+        <article class="phase">
+          <div class="phase-id">P0</div>
+          <div class="phase-copy">
+            <h3>Baseline & decision record</h3>
+            <p>Chụp settings/profile/group/content-state, tạo fresh Build Report, đo boot closure và request runtime.</p>
+            <ul><li>Chốt platform chính.</li><li>Chốt semantics ba delivery tier.</li><li>Chốt profile matrix.</li></ul>
+          </div>
+          <div class="phase-gate"><b>Exit gate</b>Có baseline tái tạo được và số liệu trước migration.</div>
+        </article>
+
+        <article class="phase">
+          <div class="phase-id">P1</div>
+          <div class="phase-copy">
+            <h3>Thin core & module boundary</h3>
+            <p>Giữ template là core init bootable; bỏ <code>_Framework/_Business</code> khỏi cơ chế project-init và chỉ compose module theo nhu cầu qua Agent.</p>
+            <ul><li>Core namespaces/asmdefs ổn định và được copy nguyên trạng.</li><li>Business/gameplay không nằm trong template; project mới thêm theo feature modules.</li><li>Mỗi module import ghi source repo, commit, dependencies, DI wiring, Addressables assets và verification.</li><li>Không thêm Cricket/YGG package/add-on modules.</li></ul>
+            <p><strong>Status 2026-10-25:</strong> passed. Neutral bootstrap/UI shell + DT/DA core compile/boot; Jigsaw roots and internal package submodules removed.</p>
+          </div>
+          <div class="phase-gate"><b>Exit gate</b>Clone core compile/boot được; không có business mẫu hoặc dependency/API mới mang tên Cricket/YGG.</div>
+        </article>
+
+        <article class="phase">
+          <div class="phase-id">C8</div>
+          <div class="phase-copy">
+            <h3>Dependency baseline cleanup</h3>
+            <p>Giữ capability chỉ khi template đang có consumer thật; project con cài tool/package tùy chọn cùng feature đầu tiên cần nó.</p>
+            <ul><li>C8.1 hoàn tất: Firebase, EDM4U, native mobile/service settings và Unity service packages đã bị loại bỏ.</li><li>C8.2A hoàn tất tại <code>7475d9b</code>: xóa 8 vendored roots, 9,147 files / 581.03 MiB; compile, tests, Addressables và fresh clone đều pass.</li><li>C8.2B hoàn tất tại <code>9423722</code>: giữ 7 direct capabilities; gỡ 24 package không có consumer, 39 lock nodes và 11.70 MiB NuGet payload thừa. Fresh clone import/compile còn 137.8 giây và EditMode 12/12.</li></ul>
+            <p><strong>Exact diff:</strong> <code>docs/stories/package-baseline-prune/execplan.md</code>.</p>
+          </div>
+          <div class="phase-gate"><b>Exit gate</b>Fresh clone compile/EditMode pass; boot và 2 Addressables groups không đổi.</div>
+        </article>
+
+        <article class="phase">
+          <div class="phase-id">P2</div>
+          <div class="phase-copy">
+            <h3>Delivery tiers & deterministic layout</h3>
+            <p>Hợp nhất mọi deliverable Addressable asset vào <code>Assets/game.assetbundles/{00_local,01_init,02_partial}</code>; SmartAddresser trở thành owner duy nhất.</p>
+            <ul><li>Di chuyển theo vertical slice và luôn giữ <code>.meta</code>/GUID; không big-bang.</li><li>Code, Editor tooling và non-addressable authoring files không nằm trong root này.</li><li><code>Assets/AddressableAssetsData</code> chỉ chứa settings/groups/schemas/layout metadata.</li><li>Setup phải idempotent và loại direct group-entry mutation trùng chức năng.</li><li>Checker đọc cả <code>shared</code> và <code>00_shared</code>; baseline hiện dùng <code>00_shared</code> cho init UI và sẽ chỉ đổi convention bằng migration GUID-safe riêng.</li></ul>
+            <p><strong>Status 2026-10-25:</strong> baseline passed cho <code>00_local</code>/<code>01_init</code>: 2 group, 3 bundle, setup byte-idempotent. <code>02_partial</code> và remote delivery chưa được tạo vì chưa có feature consumer.</p>
+          </div>
+          <div class="phase-gate"><b>Exit gate</b>Chạy setup lần hai không tạo diff; một GUID chỉ có một group.</div>
+        </article>
+
+        <article class="phase">
+          <div class="phase-id">P3</div>
+          <div class="phase-copy">
+            <h3>Profiles & delivery contract</h3>
+            <p>Tạo LocalDev / Development / Staging / Production với environment, target, content version và CDN paths.</p>
+            <ul><li>“Local” định nghĩa bằng availability.</li><li>Content-state version theo profile/platform.</li><li>Load-path đổi bắt buộc full build.</li></ul>
+          </div>
+          <div class="phase-gate"><b>Exit gate</b>Mỗi profile resolve đúng paths và không chia sẻ nhầm release artifacts.</div>
+        </article>
+
+        <article class="phase">
+          <div class="phase-id">P4</div>
+          <div class="phase-copy">
+            <h3>Runtime lifecycle</h3>
+            <p>Một catalog owner; gateways sở hữu load, instantiate, scene và download handles.</p>
+            <ul><li>Typed scene routing.</li><li>Cleanup success/cancel/fail/dispose.</li><li>Audit master data, lobby UI, previews và stage loading.</li></ul>
+          </div>
+          <div class="phase-gate"><b>Exit gate</b>Raw Addressables calls chỉ tồn tại trong adapter hoặc exception được phê duyệt.</div>
+        </article>
+
+        <article class="phase">
+          <div class="phase-id">P5</div>
+          <div class="phase-copy">
+            <h3>Template-native asset checker</h3>
+            <p>Viết checker theo invariant của template; không copy source tool Cricket và không duy trì hai rule engines lệch nhau.</p>
+            <ul><li>Editor window + batch exit code.</li><li>Build audit, trace và diff.</li><li>HAR dùng làm runtime truth.</li></ul>
+          </div>
+          <div class="phase-gate"><b>Exit gate</b>Checker fail đúng trên fixture vi phạm và pass trên fixture hợp lệ.</div>
+        </article>
+
+        <article class="phase">
+          <div class="phase-id">P6</div>
+          <div class="phase-copy">
+            <h3>Build & content update pipeline</h3>
+            <p>Một entry point, tách player build / clean content / incremental update; lỗi phải fail batch.</p>
+            <ul><li>Không double-build.</li><li>Lưu catalog/hash/state/report.</li><li>Checker chạy trước deploy.</li></ul>
+          </div>
+          <div class="phase-gate"><b>Exit gate</b>Mỗi build mode chạy đúng một lần và trả exit code chính xác.</div>
+        </article>
+
+        <article class="phase">
+          <div class="phase-id">P7</div>
+          <div class="phase-copy">
+            <h3>Vertical-slice rollout</h3>
+            <p>Migrate loading + lobby, sau đó một album/stage, hint, preview và master data trước khi mở rộng.</p>
+            <ul><li>Build/check/diff.</li><li>Cold + warm HAR.</li><li>Play-mode smoke và visual proof.</li></ul>
+          </div>
+          <div class="phase-gate"><b>Exit gate</b>Slice đầu không regression boot size, requests, lifecycle hoặc gameplay.</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="asset-check">
+      <p class="section-kicker">07 · Mechanical enforcement</p>
+      <h2>Asset-check rule set</h2>
+      <table class="rule-table">
+        <thead><tr><th>Rule</th><th>Invariant</th><th>Expected evidence</th></tr></thead>
+        <tbody>
+          <tr><td>A0</td><td>Mọi explicit Addressable entry do game sở hữu phải nằm dưới <code>Assets/game.assetbundles/**</code>; không cho phép shipping asset rải ở content/art/package paths.</td><td>Entry path + owning group; exception registry phải rỗng hoặc được phê duyệt rõ.</td></tr>
+          <tr><td>A1</td><td>Boot/initial không hard-reference on-demand.</td><td>Build-layout asset edge trace.</td></tr>
+          <tr><td>A2</td><td>Leaf album/stage không hard-reference sibling leaf.</td><td>Source → target path + owning groups.</td></tr>
+          <tr><td>A3</td><td>Shared content không reference xuống leaf; nhận diện cả <code>shared</code> và legacy <code>00_shared</code>.</td><td>Reference direction violation + convention source.</td></tr>
+          <tr><td>A4</td><td>Mỗi asset GUID có đúng một Addressables owner.</td><td>Duplicate owner list.</td></tr>
+          <tr><td>A5</td><td>Included bundle không phụ thuộc excluded group.</td><td>Bundle dependency chain.</td></tr>
+          <tr><td>A6</td><td><code>Assets/_Unused</code> không xuất hiện trong build.</td><td>Explicit/implicit shipping path.</td></tr>
+          <tr><td>A7</td><td>Availability contract đúng theo profile, không theo tên “Local”; mọi on-demand/partial dùng Local schema phải được owner xác nhận.</td><td>Resolved build/load path + tier + ownership decision.</td></tr>
+          <tr><td>W1</td><td>Implicit asset duplication được định lượng.</td><td>Bundles, bytes và source owner.</td></tr>
+        </tbody>
+      </table>
+      <div class="cards" style="margin-top:14px">
+        <article class="card"><h3>Build proof</h3><p>Build Report là artifact bắt buộc. Audit total, boot, initial, first-stage và on-demand closure.</p></article>
+        <article class="card"><h3>Change proof</h3><p>Diff old/new reports; chỉ sửa source ownership/reference, không sửa generated YAML hoặc bundle output.</p></article>
+        <article class="card"><h3>Runtime proof</h3><p>Cold/warm HAR xác nhận duplicate fetch, HTTP failure, cache behavior và excluded content.</p></article>
+      </div>
+    </section>
+
+    <section id="gates">
+      <p class="section-kicker">08 · Completion criteria</p>
+      <h2>Quality gates</h2>
+      <div class="gate-grid">
+        <article class="gate">
+          <h3>Architecture</h3>
+          <ul>
+            <li>Một catalog initialization/update owner.</li>
+            <li>Một generated membership owner.</li>
+            <li>Typed scene routes.</li>
+            <li>Không import Cricket/YGG package modules.</li>
+          </ul>
+        </article>
+        <article class="gate">
+          <h3>Asset correctness</h3>
+          <ul>
+            <li>Một GUID, một group.</li>
+            <li>Không backward tier reference.</li>
+            <li>Không excluded dependency.</li>
+            <li>Fresh Build Report pass error rules.</li>
+          </ul>
+        </article>
+        <article class="gate">
+          <h3>Runtime lifecycle</h3>
+          <ul>
+            <li>Handle có owner và release path.</li>
+            <li>Cancel/fail không leak instance hoặc handle.</li>
+            <li>Không duplicate fetch bất thường trong HAR.</li>
+            <li>Scene unload giải phóng đúng scope.</li>
+            <li>Boot loading và fatal recovery vẫn hoạt động khi catalog/global DI không khả dụng.</li>
+          </ul>
+        </article>
+        <article class="gate">
+          <h3>Build & CI</h3>
+          <ul>
+            <li>Không double-build.</li>
+            <li>Build/check lỗi làm process fail.</li>
+            <li>Content-state và reports được lưu.</li>
+            <li>Template sinh mới không chứa legacy names.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="risks">
+      <p class="section-kicker">09 · Risk register</p>
+      <h2>Risks to control</h2>
+      <div class="risk-grid">
+        <div class="risk"><span class="risk-mark"></span><div><strong>Platform baseline pending</strong><span>Compile/EditMode/PlayMode và local content build đã có; player target, device proof và HAR chờ owner chọn platform.</span></div></div>
+        <div class="risk"><span class="risk-mark"></span><div><strong>Future partial delivery</strong><span><code>02_partial</code> chưa có consumer; feature đầu tiên phải chứng minh resolved Build/Load Path thay vì suy luận từ folder/group name.</span></div></div>
+        <div class="risk"><span class="risk-mark"></span><div><strong>Generated ownership drift</strong><span>Mọi tool mới phải đi qua <code>TemplateAddressablesSetup</code> + checker; không thêm owner thứ hai sửa group entries.</span></div></div>
+        <div class="risk"><span class="risk-mark"></span><div><strong>Runtime expansion</strong><span>Gateway/scene routing chỉ được thêm cùng feature thật và phải giữ handle ownership tập trung.</span></div></div>
+        <div class="risk"><span class="risk-mark"></span><div><strong>Profile ambiguity</strong><span>Chỉ có Default/local hosting; chưa có release profile contract.</span></div></div>
+        <div class="risk high"><span class="risk-mark"></span><div><strong>Partial content on Local schema</strong><span>Cricket G003 chứng minh folder tier và schema delivery có thể lệch nhau; generator/checker phải validate resolved paths, không suy luận từ folder hoặc group name.</span></div></div>
+        <div class="risk"><span class="risk-mark"></span><div><strong>Diverged research snapshots</strong><span>Cricket e933e56 và 8da403c không có quan hệ fast-forward; chỉ dùng invariant đã re-check, không xem tree diff là lịch sử tuyến tính.</span></div></div>
+      </div>
+    </section>
+
+    <section id="decisions">
+      <p class="section-kicker">10 · Working decisions</p>
+      <h2>Decisions carried into implementation</h2>
+      <div class="card">
+        <div class="decision"><b>Discovery</b><span>Code graph để tìm symbol/relationships; current source và Unity artifacts là authority cuối.</span></div>
+        <div class="decision"><b>Migration style</b><span>Vertical slice trước, không big-bang content move.</span></div>
+        <div class="decision"><b>Template shape</b><span>Thin bootable core; không dùng <code>_Framework/_Business</code> để phân loại khi init. Agent compose/remove feature modules bằng graph + verification.</span></div>
+        <div class="decision"><b>Addressable root</b><span>Mọi game-owned deliverable asset nằm trong <code>Assets/game.assetbundles/{00_local,01_init,02_partial}</code>. <code>AddressableAssetsData</code> chỉ là metadata/config.</span></div>
+        <div class="decision"><b>UI shell</b><span>BootLoading + BootRecovery ở <code>00_local</code>; GlobalUiShell + MessageOverlay + Toast ở <code>01_init</code>; feature UI chỉ ở <code>02_partial</code>.</span></div>
+        <div class="decision"><b>Generation</b><span>SmartAddresser/layout system sở hữu generated membership; không hand-edit group YAML.</span></div>
+        <div class="decision"><b>Validation</b><span>Invariant phải machine-checkable; không chỉ ghi convention trong docs.</span></div>
+        <div class="decision"><b>Core adoption</b><span>Reimplement capability trong local namespaces; không copy HyperEel/YGG APIs hoặc asmdefs.</span></div>
+        <div class="decision"><b>DT / DA</b><span>Type định nghĩa data shape; tier định nghĩa availability. Prefix chỉ để search, không điều khiển group/lifetime.</span></div>
+        <div class="decision"><b>Harness</b><span>Harness là guidance/validation, không phải runtime product dependency. Template không chứa OpenSpec/Beads; skill không được copy source hoặc package modules từ Cricket.</span></div>
+        <div class="decision"><b>Dependencies</b><span>Không giữ vendored asset/tool/service chỉ để làm ví dụ; derived project thêm capability cùng consumer đầu tiên và sở hữu settings/upgrade của nó.</span></div>
+      </div>
+    </section>
+
+    <footer>
+      <p><strong>Artifact:</strong> Unity Template Addressables Modernization Plan</p>
+      <p><strong>Prepared:</strong> 2026-10-25 · Evidence from <code>unity-template</code> plus read-only Cricket City research at <code>features/G003 @ 8da403c</code>.</p>
+      <p><strong>Status:</strong> P1 thin core, P2 local baseline, package exit, C8.1 service prune, C8.2A vendored asset prune, and C8.2B package baseline are complete. Built-in module audit is a separate follow-up; P3–P7 remain demand-driven.</p>
+    </footer>
+  </main>
+</body>
+</html>

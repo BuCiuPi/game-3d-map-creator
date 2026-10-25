@@ -1,0 +1,19 @@
+{
+  "name": "game.bootstrap.runtime",
+  "rootNamespace": "Game.Bootstrap.Runtime",
+  "references": [
+    "game.ui.runtime",
+    "Unity.Addressables",
+    "Unity.ResourceManager",
+    "R3.Unity"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

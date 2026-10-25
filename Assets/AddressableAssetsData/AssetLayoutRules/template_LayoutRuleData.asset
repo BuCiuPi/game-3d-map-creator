@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c113ff064b10c427fb3a071e46ace37d, type: 3}
+  m_Name: template_LayoutRuleData
+  m_EditorClassIdentifier: SmartAddresser.Editor::SmartAddresser.Editor.Core.Models.LayoutRules.LayoutRuleData
+  _layoutRule:
+    _settings:
+      _excludeUnversioned:
+        _value: 0
+      _versionExpression:
+        _value: 
+    _addressRules:
+      _internalList:
+      - _id: 2f367f1b-a4d6-4628-a62e-93e65db29e88
+        _addressableGroup: {fileID: 11400000, guid: f794e1b79c4238c4fa2d250ceba77697, type: 2}
+        _control:
+          _value: 1
+        _assetGroups:
+          _internalList:
+          - _id: f46a2309-df6d-417f-99e2-3d11df63e68c
+            _name:
+              _value: game.local
+            _filters:
+              _internalList:
+              - rid: 6285190566792658944
+        _addressProviderInternal:
+          rid: 6285190566792658945
+      - _id: e33d0795-ef5f-4460-920a-dca50184e789
+        _addressableGroup: {fileID: 11400000, guid: 4150da3f92bcb3742946f456a4171e9f, type: 2}
+        _control:
+          _value: 1
+        _assetGroups:
+          _internalList:
+          - _id: 45f96c97-ba34-4307-bf80-0cfab7b80772
+            _name:
+              _value: game.init
+            _filters:
+              _internalList:
+              - rid: 6285190566792658946
+        _addressProviderInternal:
+          rid: 6285190566792658947
+    _labelRules:
+      _internalList: []
+    _versionRules:
+      _internalList: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 6285190566792658944
+      type: {class: ObjectBasedAssetFilter, ns: SmartAddresser.Editor.Core.Models.Shared.AssetGroups.AssetFilterImpl, asm: SmartAddresser.Editor}
+      data:
+        _id: b0991aec-d3b2-43f9-873e-e7248551a078
+        _folderTargetingMode: 0
+        _object:
+          _isListMode: 1
+          _values:
+          - {fileID: 102900000, guid: 07c4880b50becb84cbc2d9ed98f9e2b2, type: 3}
+    - rid: 6285190566792658945
+      type: {class: AssetPathBasedAddressProvider, ns: SmartAddresser.Editor.Core.Models.LayoutRules.AddressRules, asm: SmartAddresser.Editor}
+      data:
+        _source: 2
+        _replaceWithRegex: 0
+        _pattern: 
+        _replacement: 
+    - rid: 6285190566792658946
+      type: {class: ObjectBasedAssetFilter, ns: SmartAddresser.Editor.Core.Models.Shared.AssetGroups.AssetFilterImpl, asm: SmartAddresser.Editor}
+      data:
+        _id: 1170e314-3a64-4348-a83d-b8a4aeaefdba
+        _folderTargetingMode: 0
+        _object:
+          _isListMode: 1
+          _values:
+          - {fileID: 102900000, guid: f7d0f8ece0a6b914da3dc57e078853ae, type: 3}
+    - rid: 6285190566792658947
+      type: {class: AssetPathBasedAddressProvider, ns: SmartAddresser.Editor.Core.Models.LayoutRules.AddressRules, asm: SmartAddresser.Editor}
+      data:
+        _source: 2
+        _replaceWithRegex: 0
+        _pattern: 
+        _replacement: 

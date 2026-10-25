@@ -1,0 +1,253 @@
+// ============================================================
+// Template: Owned API stack (first-gateway scaffold, interface + gateway method,
+//           mapping, offline double)
+// ============================================================
+// Ported from cricket-city-unity .claude/skills/api-codegen/References/gateway.cs.template
+// @ 8da403c97; rewritten for com.paul.common.networking @ beb0af1.
+//
+// Placeholders:
+//   {{gateway_namespace}} — config.gateway_namespace
+//   {{Area}}              — the API area (one URL prefix), e.g. Reward -> IRewardApi
+//   {{Domain}}            — the slice the endpoint serves (feature-domain-service)
+//   {{Name}}              — e.g. ClaimReward
+//   {{DataType}}          — wire type, e.g. RewardApiData
+//   {{ModelType}}         — client type, e.g. RewardModel
+//   {{MethodName}}        — e.g. ClaimRewardAsync
+// ============================================================
+//
+// Read this first: the gateway returns Result<TModel>, never bare data. It maps
+// wire -> model itself with Project(result, data => data.ToModel()), as the
+// reference harness's owned gateways do (decision 0007); ApiData never leaves
+// the gateway.
+//
+// ApiClient.SendRequestAsync<TResponse> has four outcomes and only one is a
+// clean success:
+//   2xx + success:true   -> envelope
+//   2xx + success:false  -> envelope with Success == false   (business refusal)
+//   4xx / 5xx / no network -> THROWS Cysharp.Threading.Tasks.UnityWebRequestException
+//                           (UniTask's awaiter throws on ProtocolError/ConnectionError;
+//                            the server's envelope is in .Text, the code in .ResponseCode)
+//   empty body           -> null
+// SendAsync below folds all four into Result<TData>, and Project maps a success
+// payload while carrying a failure through untouched. Reuse that pair; do not call
+// ApiClient.SendRequestAsync from a gateway method directly.
+// ============================================================
+
+
+// === 0. FIRST ENDPOINT ONLY — create Api/{{Area}}ApiGateway.cs ===
+
+namespace {{gateway_namespace}}
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using Cysharp.Threading.Tasks;
+    using Newtonsoft.Json;
+    using Paul.Base.Networking.Runtime;
+    using Paul.Base.Networking.Runtime.Request.Base;
+    using Paul.Base.Networking.Runtime.Request.Base.Interfaces;
+    using Paul.Game.Shared.Runtime.Networking;
+    using Paul.Game.Shared.Runtime.Networking.Context;
+    using Paul.Game.Shared.Runtime.Networking.ErrorHandling;
+
+    public sealed class {{Area}}ApiGateway : I{{Area}}Api
+    {
+        #region Dependencies
+
+        private readonly ApiClient _client;
+
+        #endregion Dependencies
+
+        #region Lifecycle
+
+        public {{Area}}ApiGateway(ApiClient client)
+        {
+            _client = client;
+        }
+
+        #endregion Lifecycle
+
+        #region Subroutines
+
+        private async UniTask<Result<TData>> SendAsync<TRequest, TResponse, TData>(
+            TRequest request, CancellationToken ct)
+            where TRequest : RequestBase
+            where TResponse : ResponseBase<TData>, new()
+        {
+            if (request is ITokenAuthenticatedRequest authenticated)
+            {
+                authenticated.Token = ApiContextBuilder.GetToken();   // already "Bearer <access>"
+            }
+
+            TResponse response;
+            try
+            {
+                response = await _client.SendRequestAsync<TResponse>(request, ct);
+            }
+            catch (UnityWebRequestException e)
+            {
+                return Result<TData>.Fail(ToError(e));
+            }
+            catch (JsonException e)
+            {
+                return Result<TData>.Fail(new UnknownError("ResponseNotParsed", e.Message, 0));
+            }
+
+            // The package does not hand ct to UnityWebRequest; a cancelled call still completes.
+            ct.ThrowIfCancellationRequested();
+
+            if (response == null)
+            {
+                return Result<TData>.Fail(new UnknownError("EmptyResponse", "The server returned no body.", 0));
+            }
+
+            if (!response.Success)
+            {
+                return Result<TData>.Fail(new UnknownError(response.ErrorCode, response.Message, response.Status));
+            }
+
+            return Result<TData>.Ok(response.Data);
+        }
+
+        private static Result<TModel> Project<TData, TModel>(Result<TData> result, Func<TData, TModel> map)
+        {
+            return result.IsSuccess
+                ? Result<TModel>.Ok(map(result.GetValue()))
+                : Result<TModel>.Fail((IError)result.Error);
+        }
+
+        private static IError ToError(UnityWebRequestException e)
+        {
+            if (e.ResponseCode == 401)
+            {
+                return new TokenExpiredError();
+            }
+
+            ResponseBase<object> envelope = null;
+            try
+            {
+                envelope = string.IsNullOrEmpty(e.Text) ? null : JsonConvert.DeserializeObject<ResponseBase<object>>(e.Text);
+            }
+            catch (JsonException)
+            {
+                // a non-JSON error page (proxy, CDN); keep the transport error below
+            }
+
+            return new UnknownError(
+                envelope?.ErrorCode ?? e.Result.ToString(),
+                envelope?.Message ?? e.Error,
+                (int)e.ResponseCode);
+        }
+
+        #endregion Subroutines
+    }
+}
+
+// Register once, in LobbyLifeTimeScope (gateway-wiring Rule 1.4); {{base_url}} is
+// TODO(project) in .claude/api-codegen-config.md:
+//
+//   builder.Register(_ => new ApiClient({{base_url}}), Lifetime.Singleton);
+//   builder.Register<{{Area}}ApiGateway>(Lifetime.Singleton).As<I{{Area}}Api>();
+//
+// ApiClient also needs Assets/Resources/Paul.Core.Networking/NetworkCommonSettings.asset,
+// or its first call throws NullReferenceException (gateway-wiring Rule 1.5).
+
+
+// === 1. Add to the interface: Api/I{{Area}}Api.cs ===
+
+/// <summary>One line: what the server does, not what the method is called.</summary>
+UniTask<Result<{{ModelType}}>> {{MethodName}}(string someId, CancellationToken ct = default);
+
+
+// === 2. Add to the implementation: Api/{{Area}}ApiGateway.cs ===
+
+// --- Variant A: single object, wire -> model ---
+public async UniTask<Result<{{ModelType}}>> {{MethodName}}(string someId, CancellationToken ct = default)
+{
+    var result = await SendAsync<Request{{Name}}, Response{{Name}}, {{DataType}}>(
+        new Request{{Name}} { SomeId = someId }, ct);
+
+    return Project(result, data => data.ToModel());
+}
+
+// --- Variant B: collection, with the null-payload guard ---
+public async UniTask<Result<IReadOnlyList<{{ModelType}}>>> {{MethodName}}(CancellationToken ct = default)
+{
+    var result = await SendAsync<Request{{Name}}, Response{{Name}}, List<{{DataType}}>>(
+        new Request{{Name}}(), ct);
+
+    return Project(result, entries => (IReadOnlyList<{{ModelType}}>)
+        (entries ?? new List<{{DataType}}>())
+        .Select(entry => entry.ToModel())
+        .ToList());
+}
+
+// --- Variant C: no meaningful payload (fire-and-confirm) ---
+public async UniTask<Result<bool>> {{MethodName}}(string someId, CancellationToken ct = default)
+{
+    var result = await SendAsync<Request{{Name}}, Response{{Name}}, object>(
+        new Request{{Name}} { SomeId = someId }, ct);
+
+    return Project(result, _ => true);
+}
+
+// --- Variant D: debug-only endpoint ---
+#if !PRD_PROFILE
+public async UniTask<Result<{{ModelType}}>> Debug{{MethodName}}(string someId, int value, CancellationToken ct = default)
+{
+    var result = await SendAsync<RequestDebug{{Name}}, Response{{Name}}, {{DataType}}>(
+        new RequestDebug{{Name}} { SomeId = someId, Value = value }, ct);
+
+    return Project(result, data => data.ToModel());
+}
+#endif
+// The #if guard must match on EVERY layer it appears on — request, interface,
+// gateway, any service that forwards it, callers — or the build breaks per-profile.
+// PRD_PROFILE is set on no platform today (.claude/knowledge/03-build-and-profiles.md),
+// so this guard excludes nothing until the release build defines it. Say so in the PR.
+
+
+// === 3. Add the mapping: <Domain>/{{Name}}ApiDataToModelExtension.cs ===
+// Hand-written; there is no mapping generator. Called by the GATEWAY through
+// Project; the service receives the model:
+//
+//   var result = await _gateway.{{MethodName}}(id, ct);
+//   if (result.IsFailure) { _warn(((IError)result.Error).Message); return; }
+//   Current = result.GetValue();
+//
+// Never read GetValue() after IsFailure — it returns default, not the error.
+
+public static {{ModelType}} ToModel(this {{DataType}} data)
+{
+    if (data == null)
+    {
+        return null;
+    }
+
+    return new {{ModelType}}
+    {
+        // explicit assignment per field; no reflection, no generator
+    };
+}
+
+
+// === 4. Offline double: <Domain>/Local/Local{{Domain}}Gateway.cs — ONLY when asked ===
+// It implements the slice's I{{Domain}}Gateway, not I{{Area}}Api, returns
+// Result<{{ModelType}}>.Ok(...) from local data, and is selected at ONE
+// registration site in LobbyLifeTimeScope. The template has no offline/online
+// define yet; which symbol selects it is TODO(project).
+
+
+// ---- Rules ----
+// - Variant A for a single object; B for a collection; C for success-only; D for debug.
+// - Always CancellationToken ct = default as the last parameter.
+// - Method name convention: {Verb}{Resource}Async.
+// - Read which error signal the backend fills (config.error_signal) before switching
+//   on IError.Code; Message may be the only populated one.
+// - Use the error records (UnknownError, TokenExpiredError, InternalServerError) with
+//   Result<TData>.Fail. The *ErrorResult records are Result<IError> and do not fit.
+//   The validators in ErrorHandling/ need USE_NETWORK + LanguageExt; not available.
+// - Register the surface per its lifetime, not per convenience: scene-bound surfaces
+//   in the scene's LifetimeScope, auth-only surfaces singleton in LobbyLifeTimeScope.
+//   Never re-register a parent-scoped surface in a child scope — it shadows silently.

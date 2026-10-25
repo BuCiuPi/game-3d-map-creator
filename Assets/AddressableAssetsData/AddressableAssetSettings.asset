@@ -1,0 +1,166 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 468a46d0ae32c3544b7d98094e6448a9, type: 3}
+  m_Name: AddressableAssetSettings
+  m_EditorClassIdentifier: 
+  m_DefaultGroup: 7f8544945c0914b40bb689b61398c583
+  m_currentHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_OptimizeCatalogSize: 0
+  m_BuildRemoteCatalog: 0
+  m_CatalogRequestsTimeout: 0
+  m_DisableCatalogUpdateOnStart: 0
+  m_InternalIdNamingMode: 0
+  m_InternalBundleIdMode: 1
+  m_AssetLoadMode: 0
+  m_BundledAssetProviderType:
+    m_AssemblyName: Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_ClassName: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+  m_AssetBundleProviderType:
+    m_AssemblyName: Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_ClassName: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider
+  m_IgnoreUnsupportedFilesInBuild: 0
+  m_UniqueBundleIds: 0
+  m_EnableJsonCatalog: 0
+  m_NonRecursiveBuilding: 1
+  m_AllowNestedBundleFolders: 0
+  m_CCDEnabled: 0
+  m_maxConcurrentWebRequests: 3
+  m_UseUWRForLocalBundles: 0
+  m_BundleTimeout: 0
+  m_BundleRetryCount: 0
+  m_BundleRedirectLimit: -1
+  m_SharedBundleSettings: 0
+  m_SharedBundleSettingsCustomGroupIndex: 0
+  m_simulatedLoadDelay: 0.1
+  m_ContiguousBundles: 1
+  m_StripUnityVersionFromBundleBuild: 0
+  m_DisableVisibleSubAssetRepresentations: 0
+  m_BuiltInBundleNaming: 0
+  mBuiltInBundleCustomNaming: 
+  m_MonoScriptBundleNaming: 0
+  m_CheckForContentUpdateRestrictionsOption: 0
+  m_MonoScriptBundleCustomNaming: 
+  m_RemoteCatalogBuildPath:
+    m_Id: 
+  m_RemoteCatalogLoadPath:
+    m_Id: 
+  m_ContentStateBuildPathProfileVariableName: <default settings path>
+  m_CustomContentStateBuildPath: 
+  m_ContentStateBuildPath: 
+  m_BuildAddressablesWithPlayerBuild: 0
+  m_overridePlayerVersion: '[UnityEditor.PlayerSettings.bundleVersion]'
+  m_GroupAssets:
+  - {fileID: 11400000, guid: f794e1b79c4238c4fa2d250ceba77697, type: 2}
+  - {fileID: 11400000, guid: 4150da3f92bcb3742946f456a4171e9f, type: 2}
+  m_BuildSettings:
+    m_LogResourceManagerExceptions: 1
+    m_BundleBuildPath: Temp/com.unity.addressables/AssetBundles
+  m_ProfileSettings:
+    m_Profiles:
+    - m_InheritedParent: 
+      m_Id: 8cb7251ba85c4384897a0582fd685205
+      m_ProfileName: Default
+      m_Values:
+      - m_Id: 17e85cd00ff5e5e49a1ceabe3276e405
+        m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
+      - m_Id: 20a8376d2f5ced04998cd792a3d6698a
+        m_Value: 'http://[PrivateIpAddress]:[HostingServicePort]'
+      - m_Id: 32c5223c715e7d746b375b0579df9d2a
+        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
+      - m_Id: c03c165e7ee74c444a6dc666f881233c
+        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
+      - m_Id: fff13d10d83bb1340a9bbee6692fac4a
+        m_Value: 'ServerData/[BuildTarget]'
+    m_ProfileEntryNames:
+    - m_Id: 17e85cd00ff5e5e49a1ceabe3276e405
+      m_Name: BuildTarget
+      m_InlineUsage: 0
+    - m_Id: 20a8376d2f5ced04998cd792a3d6698a
+      m_Name: Remote.LoadPath
+      m_InlineUsage: 0
+    - m_Id: 32c5223c715e7d746b375b0579df9d2a
+      m_Name: Local.BuildPath
+      m_InlineUsage: 0
+    - m_Id: c03c165e7ee74c444a6dc666f881233c
+      m_Name: Local.LoadPath
+      m_InlineUsage: 0
+    - m_Id: fff13d10d83bb1340a9bbee6692fac4a
+      m_Name: Remote.BuildPath
+      m_InlineUsage: 0
+    m_ProfileVersion: 1
+  m_LabelTable:
+    m_LabelNames:
+    - default
+    - audio
+    - sprites
+    - stagemap
+    - sprite
+    - 20001
+    - 20002
+    - bg
+    - 30001
+    - 30002
+    - 20003
+    - 20004
+    - 20005
+    - 20006
+    - 20007
+    - 20008
+    - 20009
+    - 20010
+    - 30003
+    - 30004
+    - 30005
+    - 20011
+    - 20012
+    - 20013
+    - 20014
+    - 20015
+    - 20016
+    - 20018
+    - 20019
+    - 20017
+    - 20020
+    - 20021
+    - 20022
+    - 20023
+    - 20024
+    - 20025
+    - 20027
+    - 20026
+    - 20028
+    - 20029
+    - 20030
+    - scene
+    - pack.001.001-010
+    - pack.001.011-020
+    - pack.001.021-030
+    - preview.001
+    - chapter_1
+    - chapter_3
+    - chapter_2
+    - initial-bundle
+  m_SchemaTemplates: []
+  m_GroupTemplateObjects:
+  - {fileID: 11400000, guid: 55bc50c1d70e27e42827f3f4ee89612f, type: 2}
+  m_InitializationObjects: []
+  m_CertificateHandlerType:
+    m_AssemblyName: 
+    m_ClassName: 
+  m_ActivePlayerDataBuilderIndex: 2
+  m_DataBuilders:
+  - {fileID: 11400000, guid: 321e3d8918cc7b6469bf32f133d161f5, type: 2}
+  - {fileID: 11400000, guid: 4b9d54513006f6844b30bc02685275a0, type: 2}
+  - {fileID: 11400000, guid: 8cc9032da7b777c4eb0f36dedf64ec26, type: 2}
+  m_ActiveProfileId: 8cb7251ba85c4384897a0582fd685205

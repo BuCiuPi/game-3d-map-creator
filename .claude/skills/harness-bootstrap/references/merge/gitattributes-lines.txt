@@ -1,0 +1,3 @@
+docs/INTAKE_LOG.md  merge=union
+docs/TRACE_LOG.md   merge=union
+docs/TEST_MATRIX.md merge=union

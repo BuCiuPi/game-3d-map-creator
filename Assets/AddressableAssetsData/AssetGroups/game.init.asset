@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: game.init
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: game.init
+  m_GUID: b066f9f23d25aca4e88b006cbea023c5
+  m_SerializeEntries:
+  - m_GUID: 12840bd88338d7049bff496cf79c7033
+    m_Address: Assets/game.assetbundles/01_init/ui/00_shared/P_GlobalUiShell.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 199fd982639ec6449beb14faa54018f6
+    m_Address: Assets/game.assetbundles/01_init/ui/00_shared/P_Toast.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1b6371626c2fa14493bb10e8cc9ecb9
+    m_Address: Assets/game.assetbundles/01_init/ui/00_shared/P_MessageOverlay.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 8aead79cd06ef584092df7aa8bc9b1e9, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 042a885162733f94e9e1aae6619e2200, type: 2}
+    - {fileID: 11400000, guid: 327800d93829c7447af9e8597fa6e724, type: 2}

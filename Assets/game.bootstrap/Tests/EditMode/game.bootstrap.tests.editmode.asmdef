@@ -1,0 +1,23 @@
+{
+  "name": "game.bootstrap.tests.editmode",
+  "rootNamespace": "Game.Bootstrap.Tests.EditMode",
+  "references": [
+    "game.bootstrap.runtime",
+    "game.ui.runtime",
+    "Unity.Addressables.Editor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}
