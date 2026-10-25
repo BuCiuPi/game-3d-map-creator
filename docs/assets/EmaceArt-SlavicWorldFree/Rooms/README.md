@@ -1,6 +1,8 @@
 # Rooms
 
-Pre-composed interior rooms at the root of `Prefabs/`. 5 prefabs. Table: [prefabs.md](prefabs.md).
+**Prefabs: 5**
+
+Pre-composed interior rooms at the root of `Prefabs/`. Every prefab has its own card; see [Prefabs](#prefabs).
 
 | Prefab | Note |
 | --- | --- |
@@ -16,3 +18,19 @@ They have no LOD group and no root collider; dimensions come from the names.
   buildings need to be enterable.
 - `Rooms` is a name given to the files at the root of `Prefabs/`; it is not a
   folder in the pack.
+
+## Prefabs
+
+<!-- PREFAB-INDEX:START (generated) -->
+
+**5 prefabs**, one card each.
+
+| Subgroup | Prefab | Size (m) | In scene |
+| --- | --- | --- | --- |
+| - | [EA_Room_Comp_3X3_PRE](EA_Room_Comp_3X3_PRE.md) | - | - |
+| - | [EA_Room_Int_Kitchen_Comp_7x10_01a_PRE](EA_Room_Int_Kitchen_Comp_7x10_01a_PRE.md) | - | 1 |
+| - | [EA_Room_Int_LivingRoom_Comp_7x7_01a_PRE](EA_Room_Int_LivingRoom_Comp_7x7_01a_PRE.md) | - | 1 |
+| - | [EA_Room_Int_LivingRoom_Comp_7x7_01b_PRE](EA_Room_Int_LivingRoom_Comp_7x7_01b_PRE.md) | - | - |
+| - | [EA_Room_Int_LivingRoom_Comp_7x7_01c_PRE](EA_Room_Int_LivingRoom_Comp_7x7_01c_PRE.md) | - | - |
+
+<!-- PREFAB-INDEX:END -->

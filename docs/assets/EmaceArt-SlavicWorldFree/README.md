@@ -88,7 +88,8 @@ Root objects: `Terrain`, `Trees`, `Rocks`, `Grass`, `Grass_Spawn` (x4), `Fences`
    map's world scale.
 4. `TODO`: terrain size, resolution and layers are in the binary
    `Terrain/SLAVICA FREE TERRAIN.asset`; read them with an Editor script.
-5. `TODO`: confirm the atlas materials render under URP 17 (`URP_Support/URP Info.txt`).
+5. Materials used by prefabs are URP Lit; see [AUDIT.md](AUDIT.md) for the full audit.
+   `TODO`: confirm they look right in the Editor.
 6. `TODO`: the pack's license is not in the repo; check the Asset Store terms
    before shipping anything built from it.
 

@@ -9,9 +9,14 @@ docs/assets/
   <Pack>/                      one imported pack (the unit you buy or import)
     README.md                  pack overview, rendering notes, gaps
     <Category>/                first folder under the pack's Prefabs/
-      README.md                hand-written: role, subgroups, usage, gaps
-      prefabs.md               generated: one row per prefab
+      README.md                prefab count, role, subgroups, usage, gaps;
+                               ends with a generated prefab list
+      <Subgroup>/<Prefab>.md   one card per prefab, mirroring Prefabs/
 ```
+
+A prefab card has a generated table (path, GUID, size, collider, LODs, meshes,
+materials, nested prefabs, demo-scene count) and a hand-written `## Notes`
+section that regeneration keeps.
 
 ## Packs
 
@@ -21,11 +26,11 @@ docs/assets/
 
 ## Rules
 
-- `README.md` files are hand-written and carry judgment. `prefabs.md` files are
-  generated; never edit them. Regenerate with
+- Hand-written text lives in a README above the `PREFAB-INDEX` markers and in a
+  card below `## Notes`. Everything else is generated; never edit it. Regenerate with
   `python -I tools/assets/gen_prefab_tables.py "<pack-root>" docs/assets/<Pack> "<scene>"`.
-- A claim in a README cites what it came from: a `prefabs.md` row, a scene, or
-  an Editor check. Unverified items are `TODO`.
+- A claim cites what it came from: a prefab card, a scene, or an Editor check.
+  Unverified items are `TODO`.
 - Adding a pack: create `docs/assets/<Pack>/`, run the generator, then write the
   pack README and one README per category.
 - Pipeline context (how prefabs get placed from a map) lives in

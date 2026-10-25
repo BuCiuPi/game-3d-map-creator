@@ -1,6 +1,8 @@
 # RiverStraight
 
-Straight river segments. 4 prefabs. Table: [prefabs.md](prefabs.md).
+**Prefabs: 4**
+
+Straight river segments. Every prefab has its own card; see [Prefabs](#prefabs).
 
 | Prefab | Size (m) |
 | --- | --- |
@@ -24,3 +26,18 @@ All have a mesh collider and LODs. None is used in the demo scene.
 - No curves, no banks, no waterfall, no lake.
 - `TODO`: confirm in the Editor which side of each piece is the connecting
   end and whether the pieces share width.
+
+## Prefabs
+
+<!-- PREFAB-INDEX:START (generated) -->
+
+**4 prefabs**, one card each.
+
+| Subgroup | Prefab | Size (m) | In scene |
+| --- | --- | --- | --- |
+| - | [EA03_Environment_RiverStraight_01f_R_PRE](EA03_Environment_RiverStraight_01f_R_PRE.md) | 20.5 | - |
+| - | [EA03_Environment_RiverStraight_01g_PRE](EA03_Environment_RiverStraight_01g_PRE.md) | 35.1 | - |
+| - | [EA03_Environment_RiverStraight_02a_PRE](EA03_Environment_RiverStraight_02a_PRE.md) | 49.6 | - |
+| - | [EA03_Environment_RiverStraight_02b_PRE](EA03_Environment_RiverStraight_02b_PRE.md) | 58.7 | - |
+
+<!-- PREFAB-INDEX:END -->
